@@ -1,33 +1,38 @@
 package com.leagueofrestaurant.domain;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.catalina.Store;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "review_id")
     private long id;
-    private int ratingPoint;
+    @NotBlank(message = "평점은 null 일 수 없습니다.")
+    private Integer ratingPoint;
+    @NotBlank(message = "content를 작성해야 합니다.")
     private String content;
     private String img;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="store_id")
+    @JoinColumn(name = "store_id")
     private Store store;
 
     /**
      * 리뷰 생성
      */
-    @Builder
-    public Review(@NonNull int ratingPoint,@NonNull String content, String img,
-                  @NonNull Member member,@NonNull Store store) {
+    public Review(int ratingPoint, String content, String img,
+                  Member member, Store store) {
         this.ratingPoint = ratingPoint;
         this.content = content;
         this.img = img;
@@ -38,14 +43,16 @@ public class Review {
     /**
      * 리뷰 수정
      */
-    public void updateReview(Integer ratingPoint, String content, String img) {
-        if(ratingPoint != null)
-            this.ratingPoint = ratingPoint;
-        if(content != null){
-            this.content = content;
-        }
-        if(img != null){
-            this.img = img;
-        }
+    public void changeRatingPoint(Integer ratingPoint) {
+        this.ratingPoint = ratingPoint;
     }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
+    public void changeImg(String img) {
+        this.img = img;
+    }
+
 }
