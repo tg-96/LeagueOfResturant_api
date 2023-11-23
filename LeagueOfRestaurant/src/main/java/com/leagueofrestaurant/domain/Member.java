@@ -1,4 +1,4 @@
-package com.leagueofrestaurant.domain.member;
+package com.leagueofrestaurant.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
