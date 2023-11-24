@@ -1,0 +1,47 @@
+package com.leagueofrestaurant.domain;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+/**
+ * 리뷰에 답글 다는 기능 향후 추가하면 좋을 듯
+ */
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Report {
+    @GeneratedValue
+    @Id
+    @Column(name = "report_id")
+    private long id;
+    private Type type; //신고 유형 추가 해야함
+    private String content;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id")
+    private Review review;
+
+    @Builder
+    public Report(Type type, String content, Member member, Review review) {
+        this.type = type;
+        this.content = content;
+        this.status = Status.PROCESSING;
+        this.member = member;
+        this.review = review;
+    }
+
+    public void changeStatus(Status status) {
+        this.status = status;
+    }
+
+
+}
