@@ -1,11 +1,10 @@
-package com.leagueofrestaurant.domain;
+package com.leagueofrestaurant.web.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity

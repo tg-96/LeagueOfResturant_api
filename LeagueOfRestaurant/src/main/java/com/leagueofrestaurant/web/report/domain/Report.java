@@ -1,5 +1,7 @@
-package com.leagueofrestaurant.domain;
+package com.leagueofrestaurant.web.report.domain;
 
+import com.leagueofrestaurant.web.review.domain.Review;
+import com.leagueofrestaurant.web.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +11,8 @@ import javax.persistence.*;
 
 /**
  * 리뷰에 답글 다는 기능 향후 추가하면 좋을 듯
+ *
+ * 신고 type 추가 해야함.
  */
 
 @Entity
@@ -19,7 +23,7 @@ public class Report {
     @Id
     @Column(name = "report_id")
     private long id;
-    private Type type; //신고 유형 추가 해야함
+    private Type type;
     private String content;
     @Enumerated(EnumType.STRING)
     private Status status;

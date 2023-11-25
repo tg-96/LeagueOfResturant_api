@@ -1,5 +1,6 @@
-package com.leagueofrestaurant.domain;
+package com.leagueofrestaurant.web.review.domain;
 
+import com.leagueofrestaurant.web.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
