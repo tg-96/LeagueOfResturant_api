@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.report.domain;
 
+import com.leagueofrestaurant.web.common.Status;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.member.domain.Member;
 import lombok.AccessLevel;
