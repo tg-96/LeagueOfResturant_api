@@ -1,10 +1,10 @@
 package com.leagueofrestaurant.web.review.domain;
 
 import com.leagueofrestaurant.web.member.domain.Member;
+import com.leagueofrestaurant.web.store.domain.Store;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.Store;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
