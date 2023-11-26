@@ -2,6 +2,7 @@ package com.leagueofrestaurant.web.wish.domain;
 
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.store.domain.Store;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import javax.persistence.*;
  */
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Wish {
     @GeneratedValue @Id
     @Column(name = "wish_id")

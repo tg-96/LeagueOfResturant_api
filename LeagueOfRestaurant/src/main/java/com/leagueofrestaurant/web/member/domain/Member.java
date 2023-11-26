@@ -32,7 +32,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberType type;
 
-    public Member(String name, String phoneNumber, String password,
+    public Member( String name, String phoneNumber, String password,
                   Gender gender, LocalDate birthday, MemberType type) {
         this.name = name;
         this.phoneNumber = phoneNumber;
