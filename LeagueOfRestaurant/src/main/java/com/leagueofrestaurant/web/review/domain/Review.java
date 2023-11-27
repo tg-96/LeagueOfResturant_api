@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -17,7 +18,7 @@ public class Review {
     @GeneratedValue
     @Column(name = "review_id")
     private long id;
-    @NotBlank(message = "평점은 null 일 수 없습니다.")
+    @NotNull(message = "평점은 null 일 수 없습니다.")
     private Integer ratingPoint;
     @NotBlank(message = "content를 작성해야 합니다.")
     private String content;
