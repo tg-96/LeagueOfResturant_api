@@ -30,4 +30,5 @@ public class Store {
     @Embedded
     private Address address;
     private String img;
+
 }
