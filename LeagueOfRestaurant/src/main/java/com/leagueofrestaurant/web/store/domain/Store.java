@@ -24,10 +24,14 @@ public class Store {
     @Column(name = "store_id")
     private long id;
     private String name;
-    private String businessNum;
-    @Enumerated(EnumType.STRING)
-    private Category category;
     @Embedded
     private Address address;
     private String img;
+
+    public Store(String name, Address address, String img) {
+        this.name = name;
+        this.address = address;
+        this.img = img;
+    }
 }
+
