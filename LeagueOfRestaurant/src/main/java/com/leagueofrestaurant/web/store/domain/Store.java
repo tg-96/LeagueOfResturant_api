@@ -24,9 +24,9 @@ public class Store {
     @Column(name = "store_id")
     private long id;
     private String name;
+
     @Embedded
     private Address address;
     private String img;
-
 }
 

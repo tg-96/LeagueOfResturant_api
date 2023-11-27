@@ -56,5 +56,5 @@ public class Review {
     public void changeImg(String img) {
         this.img = img;
     }
-
 }
+

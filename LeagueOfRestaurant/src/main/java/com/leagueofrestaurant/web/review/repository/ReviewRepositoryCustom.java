@@ -6,5 +6,6 @@ import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import java.util.List;
 
 public interface ReviewRepositoryCustom {
-    List<Review> findAllByMember(Member member);
+    List<Review> findAllByMemberId(Long member_Id);
+    List<Review> findAllByStoreId(Long store_Id);
 }

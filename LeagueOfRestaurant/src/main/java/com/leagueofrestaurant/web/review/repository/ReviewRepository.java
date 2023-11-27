@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.repository;
 
+import com.leagueofrestaurant.web.member.repository.MemberRepositoryCustom;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.member.domain.Member;
 import org.springframework.data.domain.Example;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom, QuerydslPredicateExecutor {
     @Override
     List<Review> findAll();
 
