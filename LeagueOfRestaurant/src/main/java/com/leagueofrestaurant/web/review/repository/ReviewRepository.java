@@ -17,9 +17,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Override
     Optional<Review> findById(Long reviewId);
 
-    @Override
-    void deleteById(Long reviewId);
-//
-//    @Query()
-//    List<Review> findAllByMember(Member member);
 }
