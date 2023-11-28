@@ -1,35 +1,41 @@
 package com.leagueofrestaurant.web.review.service;
-
+import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.review.domain.Review;
 //import com.leagueofrestaurant.web.member.dto.MemberDto;
+import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
+import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
+    private final CommonService commonService;
+
 
     //모든 리뷰 조회
     public List<ReviewContent> getAllReviews() {
-        List <Review> reviews = reviewRepository.findAll();
+        List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg()))
+                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +45,7 @@ public class ReviewService {
 
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            return ReviewContent.create(review.getContent(), review.getImg());
+            return ReviewContent.create(review.getContent(), review.getImg(), review.getSeason());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -50,7 +56,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg()))
+                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
@@ -59,14 +65,18 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg()))
+                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
     //영수증 인증
+    public ReceiptInfo getReceiptInfo(String receiptImg) {
+        /* 영수증 OCR API 사용*/
+        return null; // 영수증 정보를 리턴
+    }
 
     //리뷰 작성
-    public void createReview(long memberId, long storeId, ReviewContent reviewContent){
+    public void createReview(long memberId, long storeId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
@@ -88,7 +98,7 @@ public class ReviewService {
     }
 
     //리뷰 삭제
-    public void deleteReview(long reviewId){
+    public void deleteReview(long reviewId) {
         if (reviewRepository.existsById(reviewId)) {
             reviewRepository.deleteById(reviewId);
         } else {
