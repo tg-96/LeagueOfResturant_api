@@ -25,23 +25,17 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         return query.selectFrom(store)
                 .where(
                         eqName(condition.getName()),
-                        eqCity(condition.getAddress().getCity()),
-                        eqDistrict(condition.getAddress().getDistrict()),
-                        eqStreet(condition.getAddress().getStreet())
+                        eqAddress(condition.getAddress())
                         )
                 .fetch();
     }
     private BooleanExpression eqName(String nameCond){
         return hasText(nameCond) ? store.name.containsIgnoreCase(nameCond) : null;
     }
-    private BooleanExpression eqCity(String city){
-        return hasText(city) ? store.address.city.containsIgnoreCase(city) : null;
+    private BooleanExpression eqAddress(Address address){
+        return address != null ?
+                store.address.city.containsIgnoreCase(address.getCity())
+                        .and(store.address.district.containsIgnoreCase(address.getDistrict()))
+                        .and(store.address.street.containsIgnoreCase(address.getStreet())) : null;
     }
-    private BooleanExpression eqDistrict(String district){
-        return hasText(district) ? store.address.district.containsIgnoreCase(district) : null;
-    }
-    private BooleanExpression eqStreet(String street){
-        return hasText(street) ? store.address.street.containsIgnoreCase(street) : null;
-    }
-
 }

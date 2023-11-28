@@ -8,4 +8,9 @@ import lombok.Getter;
 public class StoreSearchCondition {
     private String name;
     private Address address;
+
+    public StoreSearchCondition(String name, Address address) {
+        this.name = name;
+        this.address = address;
+    }
 }
