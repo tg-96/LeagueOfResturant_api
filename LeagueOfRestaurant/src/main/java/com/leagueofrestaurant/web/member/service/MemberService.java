@@ -14,16 +14,16 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-//    public List<MemberDto> getAllMember(){
-//        List<Member> memberList = memberRepository.findAll();
-//        Iterator<Member> iter = memberList.iterator();
-//
-//        while(iter.hasNext()){
-//
-//        }
-//
-//
-//        ;
-//    }
+    public List<MemberDto> getAllMember(){
+        List<Member> memberList = memberRepository.findAll();
+        Iterator<Member> iter = memberList.iterator();
+
+        while(iter.hasNext()){
+
+        }
+
+
+
+    }
 
 }
