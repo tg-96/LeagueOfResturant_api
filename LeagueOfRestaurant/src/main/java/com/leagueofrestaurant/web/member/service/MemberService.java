@@ -1,21 +1,28 @@
 package com.leagueofrestaurant.web.member.service;
 
+import com.leagueofrestaurant.web.exception.LORException;
+import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.member.domain.Member;
-import com.leagueofrestaurant.web.member.dto.MemberDto;
-import com.leagueofrestaurant.web.member.dto.MemberEditReq;
-import com.leagueofrestaurant.web.member.dto.MemberSearchCondition;
+import com.leagueofrestaurant.web.member.domain.MemberType;
+import com.leagueofrestaurant.web.member.dto.*;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
+import com.leagueofrestaurant.web.member.util.Encryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
+    public final static String LOGIN_SESSION_KEY = "USER_ID";
     private final MemberRepository memberRepository;
+    private final Encryptor encryptor;
 
     //모든 멤버 memberDto 형태로 반환
     public List<MemberDto> getAllMember() {
@@ -50,8 +57,10 @@ public class MemberService {
      * 정상적으로 멤버정보가 변경 되었으면 true 반환
      * 멤버정보가 변경되지 않았으면 false 반환
      */
-    public boolean editMember(MemberEditReq req, Long memberId) {
+    @Transactional
+    public boolean editMember(MemberEditReq req, HttpSession session) {
         try {
+            Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
             Member member = memberRepository.findById(memberId).get();
             if (req.getName() != null)
                 member.changeName(req.getName());
@@ -69,15 +78,74 @@ public class MemberService {
             return false;
         }
     }
+    /**
+     * 회원가입
+     */
+    @Transactional
+    public void join(JoinReq req, HttpSession session){
+        Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(req.getPhoneNumber());
+        if(memberByPhoneNumber != null) throw new LORException(ErrorCode.ALREADY_EXISTS_USER);
+
+        final Member member = new Member(
+                req.getName(),
+                req.getPhoneNumber(),
+                encryptor.encrypt(req.getPassword()),
+                req.getGender(),
+                req.getBirthday(),
+                MemberType.USER
+        );
+        Member memberEntity = memberRepository.saveAndFlush(member);
+        // 세션에 키 부여
+        session.setAttribute(LOGIN_SESSION_KEY,memberEntity.getId());
+    }
+    /**
+     * 로그인
+     *
+     * 세션이 이미 존재한다면 바로 로그인 처리.
+     * 세션이 존재하지 않는다면,
+     * 핸드폰 번호가 존재 하는지 파악 없으면, 예외처리
+     * 비밀번호가 일치하는지 파악 일치하지 않으면, 예외처리
+     */
+    @Transactional
+    public void login(LoginReq loginReq, HttpSession session){
+        Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
+        if(memberId != null) return;
+
+        Member member = memberRepository.findMemberByPhoneNumber(loginReq.getPhoneNumber());
+        if(member == null) throw new LORException(ErrorCode.NOT_EXIST_PHONE_NUMBER);
+        if(checkPassword(loginReq.getPassword(), member)){
+            session.setAttribute(LOGIN_SESSION_KEY,member.getId());
+        }else{
+            throw new LORException(ErrorCode.PASSWORD_NOT_MATCHED);
+        }
+    }
+
+    /**
+     * 로그 아웃
+     * 세션 제거
+     */
+    public void logout(HttpSession session){
+        session.removeAttribute(LOGIN_SESSION_KEY);
+    }
+
+    /**
+     * 회원탈퇴
+     */
+    public void deleteMember(HttpSession session){
+        Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
+        try{
+            memberRepository.deleteById(memberId);
+        }catch (IllegalArgumentException e){
+            throw new LORException(ErrorCode.FAIL_TO_DELETE);
+        }
+    }
 
     /**
      * 멤버 전화번호와 비밀번호가 일치하는지 확인
      * 일치하면 true, 일치하지 않으면 false
      */
-    public boolean checkPassword(String password, Long memberId) {
-        Member member = memberRepository.findById(memberId).get();
-        if (member.getPassword().equals(password)) return true;
-
+    public boolean checkPassword(String password, Member member) {
+        if(encryptor.isMatch(password,member.getPassword())) return true;
         return false;
     }
 
