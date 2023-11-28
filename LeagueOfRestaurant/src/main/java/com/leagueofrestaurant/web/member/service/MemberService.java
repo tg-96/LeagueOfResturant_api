@@ -10,6 +10,7 @@ import com.leagueofrestaurant.web.member.util.Encryptor;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,9 +61,8 @@ public class MemberService {
      * 멤버정보가 변경되지 않았으면 false 반환
      */
     @Transactional
-    public boolean editMember(MemberEditReq req, HttpSession session) {
+    public boolean editMember(MemberEditReq req, Long memberId) {
         try {
-            Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
             Member member = memberRepository.findById(memberId).get();
             if (req.getName() != null)
                 member.changeName(req.getName());
@@ -101,8 +101,7 @@ public class MemberService {
         session.setAttribute(LOGIN_SESSION_KEY,memberEntity.getId());
     }
     /**
-     * 로그인
-     *
+     * 인증 (Authentication)
      * 세션이 이미 존재한다면 바로 로그인 처리.
      * 세션이 존재하지 않는다면,
      * 핸드폰 번호가 존재 하는지 파악 없으면, 예외처리
@@ -136,8 +135,7 @@ public class MemberService {
      * 멤버 soft delete
      *
      */
-    public void deleteMember(HttpSession session){
-        Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
+    public void deleteMember(Long memberId){
         try{
             Member member = memberRepository.findById(memberId).get();
             member.softDeleted();
@@ -145,6 +143,9 @@ public class MemberService {
             throw new LORException(ErrorCode.FAIL_TO_DELETE);
         }
     }
+    /**
+     * 인가(Authentication)
+     */
 
     /**
      * 멤버 전화번호와 비밀번호가 일치하는지 확인
@@ -170,5 +171,13 @@ public class MemberService {
         return memberDtoList;
     }
 
-
+    /**
+     * 인가(Authentication)
+     */
+    public ResponseEntity<Void> authentication(HttpSession session) {
+        if(session.getAttribute(LOGIN_SESSION_KEY) == null){
+            throw new LORException(ErrorCode.NO_SESSION);
+        }
+        return ResponseEntity.ok().build();
+    }
 }
