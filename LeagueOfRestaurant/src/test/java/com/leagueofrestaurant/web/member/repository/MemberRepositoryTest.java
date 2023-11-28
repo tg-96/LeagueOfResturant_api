@@ -88,10 +88,10 @@ class MemberRepositoryTest {
         List<Member> list = memberRepository.saveAllAndFlush(memberList);
 
         //jeong,"010-5913-5935" 조건일때
-        MemberSearchCondition jeong_cond = MemberSearchCondition.create("jeong", "010-5913-5935");
-        MemberSearchCondition jeong2_cond = MemberSearchCondition.create("jeong", "010-5913-5934");
-        MemberSearchCondition han_cond = MemberSearchCondition.create("han", "010-1593-1234");
-        MemberSearchCondition han2_cond = MemberSearchCondition.create("han", "010-1593-1235");
+        MemberSearchCondition jeong_cond = new MemberSearchCondition("jeong", "010-5913-5935");
+        MemberSearchCondition jeong2_cond = new MemberSearchCondition("jeong", "010-5913-5934");
+        MemberSearchCondition han_cond = new MemberSearchCondition("han", "010-1593-1234");
+        MemberSearchCondition han2_cond = new MemberSearchCondition("han", "010-1593-1235");
 
         List<MemberSearchCondition> conditionList = new ArrayList<>();
         conditionList.add(jeong_cond);
@@ -106,8 +106,8 @@ class MemberRepositoryTest {
         }
 
         //name만 조건으로 들어 있을때
-        MemberSearchCondition jeong_cond2 = MemberSearchCondition.create("jeong", "");
-        MemberSearchCondition han_cond2 = MemberSearchCondition.create("han", "");
+        MemberSearchCondition jeong_cond2 = new MemberSearchCondition("jeong", "");
+        MemberSearchCondition han_cond2 = new MemberSearchCondition("han", "");
 
         List<Member> member2 = memberRepository.findByCondition(jeong_cond2);
         List<Member> member3 = memberRepository.findByCondition(han_cond2);

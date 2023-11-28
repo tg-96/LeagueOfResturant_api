@@ -7,8 +7,6 @@ import com.leagueofrestaurant.web.member.domain.MemberType;
 import com.leagueofrestaurant.web.member.dto.*;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.member.util.Encryptor;
-import com.leagueofrestaurant.web.review.domain.Review;
-import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -74,19 +72,20 @@ public class MemberService {
                 member.changeGender(req.getGender());
 
             if (req.getPassword() != null)
-                member.changePassword(req.getPassword());
+                member.changePassword(encryptor.encrypt(req.getPassword()));
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
+
     /**
      * 회원가입
      */
     @Transactional
-    public void join(JoinReq req, HttpSession session){
+    public void join(JoinReq req, HttpSession session) {
         Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(req.getPhoneNumber());
-        if(memberByPhoneNumber != null) throw new LORException(ErrorCode.ALREADY_EXISTS_USER);
+        if (memberByPhoneNumber != null) throw new LORException(ErrorCode.ALREADY_EXISTS_USER);
 
         final Member member = new Member(
                 req.getName(),
@@ -98,8 +97,9 @@ public class MemberService {
         );
         Member memberEntity = memberRepository.saveAndFlush(member);
         // 세션에 키 부여
-        session.setAttribute(LOGIN_SESSION_KEY,memberEntity.getId());
+        session.setAttribute(LOGIN_SESSION_KEY, memberEntity.getId());
     }
+
     /**
      * 인증 (Authentication)
      * 세션이 이미 존재한다면 바로 로그인 처리.
@@ -108,15 +108,15 @@ public class MemberService {
      * 비밀번호가 일치하는지 파악 일치하지 않으면, 예외처리
      */
     @Transactional
-    public void login(LoginReq loginReq, HttpSession session){
-        Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
-        if(memberId != null) return;
+    public void login(LoginReq loginReq, HttpSession session) {
+        Long memberId = (Long) session.getAttribute(LOGIN_SESSION_KEY);
+        if (memberId != null) return;
 
         Member member = memberRepository.findMemberByPhoneNumber(loginReq.getPhoneNumber());
-        if(member == null) throw new LORException(ErrorCode.NOT_EXIST_PHONE_NUMBER);
-        if(checkPassword(loginReq.getPassword(), member)){
-            session.setAttribute(LOGIN_SESSION_KEY,member.getId());
-        }else{
+        if (member == null) throw new LORException(ErrorCode.NOT_EXIST_PHONE_NUMBER);
+        if (checkPassword(loginReq.getPassword(), member)) {
+            session.setAttribute(LOGIN_SESSION_KEY, member.getId());
+        } else {
             throw new LORException(ErrorCode.PASSWORD_NOT_MATCHED);
         }
     }
@@ -125,21 +125,22 @@ public class MemberService {
      * 로그 아웃
      * 세션 제거
      */
-    public void logout(HttpSession session){
+    @Transactional
+    public void logout(HttpSession session) {
         session.removeAttribute(LOGIN_SESSION_KEY);
     }
 
     /**
      * 회원탈퇴
-     *
+     * <p>
      * 멤버 soft delete
-     *
      */
-    public void deleteMember(Long memberId){
-        try{
+    @Transactional
+    public void deleteMember(Long memberId) {
+        try {
             Member member = memberRepository.findById(memberId).get();
             member.softDeleted();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new LORException(ErrorCode.FAIL_TO_DELETE);
         }
     }
@@ -152,7 +153,7 @@ public class MemberService {
      * 일치하면 true, 일치하지 않으면 false
      */
     public boolean checkPassword(String password, Member member) {
-        if(encryptor.isMatch(password,member.getPassword())) return true;
+        if (encryptor.isMatch(password, member.getPassword())) return true;
         return false;
     }
 
@@ -175,7 +176,7 @@ public class MemberService {
      * 인가(Authentication)
      */
     public ResponseEntity<Void> authentication(HttpSession session) {
-        if(session.getAttribute(LOGIN_SESSION_KEY) == null){
+        if (session.getAttribute(LOGIN_SESSION_KEY) == null) {
             throw new LORException(ErrorCode.NO_SESSION);
         }
         return ResponseEntity.ok().build();

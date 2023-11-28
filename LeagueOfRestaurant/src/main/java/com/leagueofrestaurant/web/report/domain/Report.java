@@ -19,7 +19,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report {
+public class
+Report {
     @GeneratedValue
     @Id
     @Column(name = "report_id")

@@ -1,10 +1,13 @@
 package com.leagueofrestaurant.web.member.domain;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.leagueofrestaurant.web.member.util.Encryptor;
 import com.leagueofrestaurant.web.report.domain.Type;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,20 +22,13 @@ public class Member {
     @Id
     @Column(name = "member_id")
     private long id;
-    @NotBlank(message = "이름을 작성하세요.")
     private String name;
-    @NotBlank(message = "핸드폰 번호를 작성하세요.")
     private String phoneNumber;
-    @NotBlank(message = "비밀번호를 작성하세요.")
     private String password;
-
-    @NotNull(message = "성별을 입력하세요.")
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @NotNull(message = "생일을 입력하세요.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-    @NotNull(message = "member type 을 입력하세요.")
     @Enumerated(EnumType.STRING)
     private MemberType type;
     private boolean isDeleted;

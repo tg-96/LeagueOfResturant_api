@@ -26,7 +26,7 @@ public class MemberController {
         return memberService.getMemberById(id);
     }
 
-    @GetMapping("/members")
+    @GetMapping("/members/condition")
     public List<MemberDto> getMemberByCondition(@ModelAttribute MemberSearchCondition condition) {
         return memberService.getByCondition(condition);
     }
