@@ -8,5 +8,4 @@ import java.util.List;
 public interface MemberRepositoryCustom {
     Member findMemberByPhoneNumber(String phoneNumber);
     List<Member> findByCondition(MemberSearchCondition condition);
-
 }

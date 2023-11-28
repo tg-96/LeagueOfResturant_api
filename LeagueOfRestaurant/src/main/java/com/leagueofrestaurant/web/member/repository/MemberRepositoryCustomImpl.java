@@ -1,7 +1,6 @@
 package com.leagueofrestaurant.web.member.repository;
 
 import com.leagueofrestaurant.web.member.domain.Member;
-import com.leagueofrestaurant.web.member.domain.QMember;
 import com.leagueofrestaurant.web.member.dto.MemberSearchCondition;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,9 +14,12 @@ import static org.springframework.util.StringUtils.hasText;
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory query;
 
-    public MemberRepositoryCustomImpl(EntityManager em){
+    public MemberRepositoryCustomImpl(EntityManager em) {
         this.query = new JPAQueryFactory(em);
     }
+
+
+
     @Override
     public Member findMemberByPhoneNumber(String phoneNumber) {
         return query
@@ -32,16 +34,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .selectFrom(member)
                 .where(
                         eqName(condition.getName()),
-                        eqPhoneNumber(condition.getPhoneNumber())
+                        eqPhoneNumber(condition.getPhoneNumber()),
+                        member.isDeleted.isFalse()
                 )
                 .fetch();
     }
 
-    private BooleanExpression eqName(String nameCond){
+    private BooleanExpression eqName(String nameCond) {
         return hasText(nameCond) ? member.name.containsIgnoreCase(nameCond) : null;
     }
 
-    private BooleanExpression eqPhoneNumber(String phoneNumberCond){
+    private BooleanExpression eqPhoneNumber(String phoneNumberCond) {
         return hasText(phoneNumberCond) ? member.phoneNumber.containsIgnoreCase(phoneNumberCond) : null;
     }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 public class MemberService {
     public final static String LOGIN_SESSION_KEY = "USER_ID";
     private final MemberRepository memberRepository;
-    private final ReviewRepository reviewRepository;
     private final Encryptor encryptor;
 
     //모든 멤버 memberDto 형태로 반환
