@@ -1,6 +1,7 @@
 package com.leagueofrestaurant.web.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.leagueofrestaurant.web.report.domain.Type;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,12 +52,16 @@ public class Member {
     public void changeName(String name) {
         this.name = name;
     }
-
-    public void changePhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public void changePassword(String password) {
         this.password = password;
+    }
+    public void changeGender(Gender gender){
+        this.gender = gender;
+    }
+    public void changeBirthday(LocalDate birthday){
+        this.birthday =birthday;
+    }
+    public void changeType(MemberType type){
+        this.type = type;
     }
 }
