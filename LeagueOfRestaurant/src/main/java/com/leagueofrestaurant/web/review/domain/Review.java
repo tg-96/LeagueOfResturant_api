@@ -56,5 +56,9 @@ public class Review {
     public void changeImg(String img) {
         this.img = img;
     }
+
+    public void memberToNull(){
+        this.member = null;
+    }
 }
 

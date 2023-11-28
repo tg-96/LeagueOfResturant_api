@@ -1,12 +1,14 @@
 package com.leagueofrestaurant.web.member.service;
 
-import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.exception.ErrorCode;
+import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.domain.MemberType;
 import com.leagueofrestaurant.web.member.dto.*;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.member.util.Encryptor;
+import com.leagueofrestaurant.web.review.domain.Review;
+import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import java.util.List;
 public class MemberService {
     public final static String LOGIN_SESSION_KEY = "USER_ID";
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
     private final Encryptor encryptor;
 
     //모든 멤버 memberDto 형태로 반환
@@ -39,12 +42,12 @@ public class MemberService {
     /**
      * @return 중복됐으면 true, 중복 아니면 false
      */
-    public boolean isDuplicated(String phoneNumber) {
+    public boolean phoneNumDuplicated(String phoneNumber) {
         Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(phoneNumber);
         if (memberByPhoneNumber != null) {
             return true;
         }
-        return false;
+        throw new LORException(ErrorCode.PHONE_NUM_DUPLICATED);
     }
 
     public List<MemberDto> getByCondition(MemberSearchCondition cond) {
@@ -130,11 +133,15 @@ public class MemberService {
 
     /**
      * 회원탈퇴
+     *
+     * 멤버 soft delete
+     *
      */
     public void deleteMember(HttpSession session){
         Long memberId = (Long)session.getAttribute(LOGIN_SESSION_KEY);
         try{
-            memberRepository.deleteById(memberId);
+            Member member = memberRepository.findById(memberId).get();
+            member.softDeleted();
         }catch (IllegalArgumentException e){
             throw new LORException(ErrorCode.FAIL_TO_DELETE);
         }

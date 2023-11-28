@@ -35,6 +35,7 @@ public class Member {
     @NotNull(message = "member type 을 입력하세요.")
     @Enumerated(EnumType.STRING)
     private MemberType type;
+    private boolean isDeleted;
 
     public Member(String name, String phoneNumber, String password,
                   Gender gender, LocalDate birthday, MemberType type) {
@@ -44,6 +45,7 @@ public class Member {
         this.gender = gender;
         this.birthday = birthday;
         this.type = type;
+        this.isDeleted = false;
     }
 
     /**
@@ -63,5 +65,8 @@ public class Member {
     }
     public void changeType(MemberType type){
         this.type = type;
+    }
+    public void softDeleted(){
+        this.isDeleted = true;
     }
 }

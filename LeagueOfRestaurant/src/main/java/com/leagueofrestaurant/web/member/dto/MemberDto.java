@@ -2,9 +2,10 @@ package com.leagueofrestaurant.web.member.dto;
 
 import com.leagueofrestaurant.web.member.domain.Gender;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDate;
-
+@Getter
 public class MemberDto {
     private String name;
     private String phoneNumber;
