@@ -6,7 +6,6 @@ import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import java.util.List;
 
 public interface StoreRepositoryCustom {
-//    public Long changeStatus(long storeId);
-//
-//    public List<Store> findStoreListByCondition(StoreSearchCondition condition);
+    public List<Store> findStoreListByCondition(StoreSearchCondition condition);
+
 }
