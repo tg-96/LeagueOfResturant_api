@@ -22,6 +22,7 @@ public class Review {
     private Integer ratingPoint;
     @NotBlank(message = "content를 작성해야 합니다.")
     private String content;
+    private String season;
     private String img;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -33,14 +34,14 @@ public class Review {
     /**
      * 리뷰 생성
      */
-    public Review(int ratingPoint, String content, String img,
+    public Review(int ratingPoint, String content, String season, String img,
                   Member member, Store store) {
         this.ratingPoint = ratingPoint;
         this.content = content;
+        this.season = season;
         this.img = img;
         this.member = member;
-        this.store = store;
-    }
+        this.store = store;}
 
     /**
      * 리뷰 수정
@@ -53,6 +54,10 @@ public class Review {
         this.content = content;
     }
 
+    public void changeSeason(String season){
+        this.season = season;
+    }
+
     public void changeImg(String img) {
         this.img = img;
     }
@@ -60,5 +65,6 @@ public class Review {
     public void memberToNull(){
         this.member = null;
     }
+
 }
 

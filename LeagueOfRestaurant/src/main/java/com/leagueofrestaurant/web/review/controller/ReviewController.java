@@ -41,4 +41,10 @@ public class ReviewController {
         return reviewService.getReviewsByStoreId(storeId);
     }
 
+    //영수증 인증
+
+    //리뷰 작성
+
+    //리뷰 삭제
+
 }

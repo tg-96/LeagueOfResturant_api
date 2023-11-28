@@ -10,8 +10,9 @@ public enum ErrorCode {
     FAIL_TO_DELETE("유저 정보 삭제 실패"),
     PHONE_NUM_DUPLICATED("핸드폰 번호가 이미 존재합니다."),
     NO_SESSION("로그인을 하지 않았습니다."),
-    /* REVIEW */
-    NOT_EXIST_REVIEW("존재하지 않는 리뷰");
+    NOT_EXIST_REVIEW("존재하지 않는 리뷰"),
+    NOT_EXIST_MEMBER("존재하지 않는 회원"),
+    NOT_EXIST_STORE("존재하지 않는 가게");
     private final String message;
     ErrorCode(String message) {
         this.message = message;
