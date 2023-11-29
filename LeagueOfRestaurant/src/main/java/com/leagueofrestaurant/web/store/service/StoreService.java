@@ -21,7 +21,7 @@ public class StoreService {
 
     public StoreDto getStoreById(Long storeId) {
         Store store = storeRepository.findById(storeId).get();
-        StoreDto storeDto = new StoreDto(store.getName(), store.getAddress(), store.getImg());
+        StoreDto storeDto = new StoreDto(store.getName(), store.getAddress(), store.getImg(), store.getId());
         return storeDto;
     }
 
@@ -54,7 +54,7 @@ public class StoreService {
     private static List<StoreDto> getStoreDtoList(List<Store> storeList) {
         try {
             return storeList.stream()
-                    .map(s -> new StoreDto(s.getName(), s.getAddress(), s.getImg()))
+                    .map(s -> new StoreDto(s.getName(), s.getAddress(), s.getImg(), s.getId()))
                     .collect(Collectors.toList());
         } catch (NullPointerException e) {
             throw new LORException(ErrorCode.NO_EXIST_STORE);

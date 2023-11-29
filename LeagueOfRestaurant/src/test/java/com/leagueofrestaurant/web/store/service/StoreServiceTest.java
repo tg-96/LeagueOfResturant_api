@@ -29,7 +29,7 @@ class StoreServiceTest {
     public void createStore() {
         StoreDto storeDto1 = new StoreDto("yul",
                 new Address("a", "k", "l"),
-                null
+                null,1L
         );
         storeService.createStore(storeDto1);
         List<StoreDto> stores = storeService.getAllStores();
@@ -53,7 +53,7 @@ class StoreServiceTest {
     @Test
     @DisplayName("스토어 정보 변경")
     public void updateStore() {
-        StoreDto storeDto = new StoreDto("jeong", null, null);
+        StoreDto storeDto = new StoreDto("jeong", null, null,3L);
         storeService.updateStore(3L, storeDto);
         StoreDto store = storeService.getStoreById(3L);
         assertThat(store.getName()).isEqualTo("jeong");

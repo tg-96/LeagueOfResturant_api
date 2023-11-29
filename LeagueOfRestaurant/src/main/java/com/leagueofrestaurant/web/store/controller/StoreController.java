@@ -31,4 +31,5 @@ public class StoreController {
     public List<StoreDto> getStoreListByCondition(@ModelAttribute StoreSearchCondition condition){
         return storeService.getStoreListByCondition(condition);
     }
+
 }
