@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.store.domain;
 
+import com.leagueofrestaurant.web.store.dto.StoreDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,16 @@ public class Store {
         this.name = name;
         this.address = address;
         this.img = img;
+    }
+    public void change(StoreDto storeDto){
+        if(storeDto.getName() != null){
+            this.name = storeDto.getName();
+        }
+        if(storeDto.getAdress() != null){
+            this.address = storeDto.getAdress();
+        }if(storeDto.getImg() != null){
+            this.img = storeDto.getImg();
+        }
     }
 }
 

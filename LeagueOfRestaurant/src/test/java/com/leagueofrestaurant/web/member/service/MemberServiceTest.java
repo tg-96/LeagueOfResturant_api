@@ -67,7 +67,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("중복검사")
-    public void phoneNumDuplicated(){
+    public void phoneNumDuplicated() {
         Member member1 = new Member("a", "1234", "1234", Gender.MALE,
                 LocalDate.of(1996, 05, 28), MemberType.USER);
 
@@ -75,9 +75,10 @@ class MemberServiceTest {
         boolean duplicated = memberService.phoneNumDuplicated("1234");
         assertThat(duplicated).isTrue();
     }
+
     @Test
     @DisplayName("조건으로 검색")
-    public void getByCondition(){
+    public void getByCondition() {
         Member member1 = new Member("a", "1234", "1234", Gender.MALE,
                 LocalDate.of(1996, 05, 28), MemberType.USER);
         Member member2 = new Member("b", "1235", "1234", Gender.MALE,
@@ -88,9 +89,9 @@ class MemberServiceTest {
         Member entity2 = memberRepository.saveAndFlush(member2);
         Member entity3 = memberRepository.saveAndFlush(member3);
 
-        MemberSearchCondition cond1 = MemberSearchCondition.create("a",null);
-        MemberSearchCondition cond2 = MemberSearchCondition.create("b",null);
-        MemberSearchCondition cond3 = MemberSearchCondition.create("a","2345");
+        MemberSearchCondition cond1 = new MemberSearchCondition("a", null);
+        MemberSearchCondition cond2 = new MemberSearchCondition("b", null);
+        MemberSearchCondition cond3 = new MemberSearchCondition("a", "2345");
 
         List<MemberDto> memberDto1 = memberService.getByCondition(cond1);
         List<MemberDto> memberDto2 = memberService.getByCondition(cond2);
