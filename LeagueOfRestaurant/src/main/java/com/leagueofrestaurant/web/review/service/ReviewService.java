@@ -30,23 +30,22 @@ public class ReviewService {
     private final CommonService commonService;
     private final StoreService storeService;
 
-
-    //모든 리뷰 조회
+    // 모든 리뷰 조회
     public List<ReviewContent> getAllReviews() {
         List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
-    //특정 리뷰 조회
+    // 특정 리뷰 조회
     public ReviewContent getReview(Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
 
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            return ReviewContent.create(review.getContent(), review.getImg(), review.getSeason());
+            return new ReviewContent(review.getContent(), review.getImg(), review.getSeason());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -57,16 +56,16 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
-    //특정 가게의 리뷰 조회
+    // 특정 가게의 리뷰 조회
     public List<ReviewContent> getReviewsByStoreId(Long storeId) {
         List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
 
         return reviews.stream()
-                .map(review -> ReviewContent.create(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
