@@ -10,13 +10,10 @@ public enum ErrorCode {
     FAIL_TO_DELETE("유저 정보 삭제 실패"),
     PHONE_NUM_DUPLICATED("핸드폰 번호가 이미 존재합니다."),
     NO_SESSION("로그인을 하지 않았습니다."),
-<<<<<<< HEAD
-    NO_EXIST_STORE("조회할 store가 존재하지 않습니다.");
-=======
+    NO_EXIST_STORE("조회할 store가 존재하지 않습니다."),
     NOT_EXIST_REVIEW("존재하지 않는 리뷰"),
-    NOT_EXIST_MEMBER("존재하지 않는 회원"),
-    NOT_EXIST_STORE("존재하지 않는 가게");
->>>>>>> feat/review-svc
+    NOT_EXIST_MEMBER("존재하지 않는 회원");
+
     private final String message;
     ErrorCode(String message) {
         this.message = message;
