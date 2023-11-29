@@ -14,4 +14,4 @@ public interface StoreRepository extends JpaRepository<Store,Long>,StoreReposito
     Optional<Store> findById(Long storeId);
     @Override
     List<Store> findAll();
-    }
+}

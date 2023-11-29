@@ -1,16 +1,14 @@
 package com.leagueofrestaurant.web.review.dto;
-import com.leagueofrestaurant.web.store.domain.Address;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+import org.apache.tomcat.jni.Address;
 
 public class ReceiptInfo {
     private String storeName;
-    private Address address;
+    private String Address;
+    private String city;
+
+    public ReceiptInfo(String storeName, String address, String city) {
+        this.storeName = storeName;
+        Address = address;
+        this.city = city;
+    }
 }

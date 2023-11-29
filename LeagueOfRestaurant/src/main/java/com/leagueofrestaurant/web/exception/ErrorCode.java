@@ -13,7 +13,8 @@ public enum ErrorCode {
     NO_EXIST_STORE("조회할 store가 존재하지 않습니다."),
     NOT_EXIST_REVIEW("존재하지 않는 리뷰"),
     NOT_EXIST_MEMBER("존재하지 않는 회원"),
-    RECEIPT_ERROR("영수증 인식 오류");
+    RECEIPT_ERROR("영수증 인식 오류"),
+    WRONG_MEMBER_OR_STORE_ID("member id 혹은 store id가 잘못 되었습니다.");
 
     private final String message;
     ErrorCode(String message) {

@@ -1,6 +1,5 @@
 package com.leagueofrestaurant.web.store.repository;
 
-import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import org.assertj.core.api.Assertions;
@@ -23,18 +22,10 @@ class StoreRepositoryTest {
 
     @Test
     public void 조건별_조회() {
-        Store store1 = new Store("a가게",
-                new Address("성남시", "수정구", "태평동"),
-                null);
-        Store store2 = new Store("a가게",
-                new Address("성남시", "판교", "목현동"),
-                null);
-        Store store3 = new Store("c가게",
-                new Address("성남시", "수정구", "태평동"),
-                null);
-        Store store4 = new Store("b가게",
-                new Address("수원시", "영통구", "권선동"),
-                null);
+        Store store1 = new Store("a", "aa", "aaa", null);
+        Store store2 = new Store("b", "bb", "ccc", null);
+        Store store3 = new Store("z", "q", "p", null);
+        Store store4 = new Store("hh", "gg", "ff", null);
 
         List<Store> storeList = new ArrayList<>();
         storeList.add(store1);
@@ -47,11 +38,11 @@ class StoreRepositoryTest {
         List<Store> list1 = storeRepository.findStoreListByCondition(cond1);
         Assertions.assertThat(list1.size()).isEqualTo(2);
         //주소,이름 검색
-        StoreSearchCondition cond2 = new StoreSearchCondition("a가게", new Address("성남시","수정구","태평동"));
+        StoreSearchCondition cond2 = new StoreSearchCondition("a가게", "수정구");
         List<Store> list2 = storeRepository.findStoreListByCondition(cond2);
         Assertions.assertThat(list2.size()).isEqualTo(1);
         //주소 검색
-        StoreSearchCondition cond3 = new StoreSearchCondition(null, new Address("성남시","수정구","태평동"));
+        StoreSearchCondition cond3 = new StoreSearchCondition(null, "수정구");
         List<Store> list3 = storeRepository.findStoreListByCondition(cond3);
         Assertions.assertThat(list3.size()).isEqualTo(2);
 

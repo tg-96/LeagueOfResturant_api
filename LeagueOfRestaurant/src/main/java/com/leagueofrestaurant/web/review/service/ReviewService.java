@@ -12,9 +12,6 @@ import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
-import com.leagueofrestaurant.web.store.domain.Address;
-import com.leagueofrestaurant.web.store.domain.Store;
-import com.leagueofrestaurant.web.store.dto.StoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.store.service.StoreService;
@@ -93,8 +90,8 @@ public class ReviewService {
         else{ //성공
             String storeName = receiptData.get(1);
             String storeAddress = receiptData.get(2);
-            ReceiptInfo receiptInfo = new ReceiptInfo(storeName, storeAddress);
-            return receiptInfo;
+            //ReceiptInfo receiptInfo = new ReceiptInfo(storeName, storeAddress);
+            //return receiptInfo;
         }
     }
 
@@ -105,12 +102,12 @@ public class ReviewService {
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
         //영수증 정보에서 가게명, 주소 추출
-        String storeName = receiptInfo.getStoreName();
-        Address address = receiptInfo.getAddress();
+        //String storeName = receiptInfo.getStoreName();
+        //Address address = receiptInfo.getAddress();
 
         //가게명과 주소로 store를 찾기
-        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
-        List<StoreDto> store = storeService.getStoreListByCondition(storeSearchCondition);
+//        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
+//        List<StoreDto> store = storeService.getStoreListByCondition(storeSearchCondition);
 
         //if: store가 존재하지 않을 경우,
         // - 가게 생성을 위한 storeservice의 createStore를 호출

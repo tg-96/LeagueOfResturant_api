@@ -1,6 +1,7 @@
 package com.leagueofrestaurant.web.store.domain;
 
-import com.leagueofrestaurant.web.store.dto.StoreDto;
+import com.leagueofrestaurant.web.store.dto.RequestStoreDto;
+import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,23 +27,29 @@ public class Store {
     private long id;
     private String name;
 
-    @Embedded
-    private Address address;
+    private String address;
+    private String city;
     private String img;
 
-    public Store(String name, Address address, String img) {
+    public Store(String name, String address, String city, String img) {
         this.name = name;
         this.address = address;
+        this.city = city;
         this.img = img;
     }
-    public void change(StoreDto storeDto){
+
+    public void change(RequestStoreDto storeDto){
         if(storeDto.getName() != null){
             this.name = storeDto.getName();
         }
         if(storeDto.getAdress() != null){
             this.address = storeDto.getAdress();
-        }if(storeDto.getImg() != null){
+        }
+        if(storeDto.getImg() != null){
             this.img = storeDto.getImg();
+        }
+        if(storeDto.getCity() != null){
+            this.city = storeDto.getCity();
         }
     }
 }
