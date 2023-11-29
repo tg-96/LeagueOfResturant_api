@@ -1,11 +1,13 @@
 package com.leagueofrestaurant.web.store.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
 @Getter
+@Setter
 public class Address {
     private String city;
     private String district;
@@ -18,4 +20,5 @@ public class Address {
         this.district = district;
         this.street = street;
     }
+
 }
