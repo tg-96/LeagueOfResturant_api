@@ -3,12 +3,11 @@ package com.leagueofrestaurant.web.review.controller;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -20,6 +19,12 @@ public class ReviewController {
     @GetMapping("/")
     public List<ReviewContent> getAllReviews() {
         return reviewService.getAllReviews();
+    }
+
+    //특정 리뷰 조회
+    @GetMapping("/{reviewId}")
+    public ReviewContent getReivew(@PathVariable Long reviewId) {
+        return reviewService.getReview(reviewId);
     }
 
     //특정 사용자의 리뷰 조회
@@ -34,4 +39,14 @@ public class ReviewController {
         return reviewService.getReviewsByStoreId(storeId);
     }
 
+    //영수증 인증
+
+    //리뷰 작성
+
+    //리뷰 삭제
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok().build();
+    }
 }

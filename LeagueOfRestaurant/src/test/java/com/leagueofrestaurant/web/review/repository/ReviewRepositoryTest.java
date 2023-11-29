@@ -52,9 +52,9 @@ public class ReviewRepositoryTest {
         storeRepository.saveAndFlush(store1);
         storeRepository.saveAndFlush(store2);
 
-        Review review1 = new Review(5, "좋아요", "이미지1", member1, store1);
-        Review review2 = new Review(4, "괜찮아요", "이미지2", member1, store2);
-        Review review3 = new Review(3, "괜찮아2", "이미지3", member2, store1);
+        Review review1 = new Review(5, "좋아요", "2023-Winter", "이미지1", member1, store1);
+        Review review2 = new Review(4, "괜찮아요", "2023-Winter", "이미지2",  member1, store2);
+        Review review3 = new Review(3, "괜찮아2", "2023-Winter", "이미지3", member2, store1);
 
 
         reviewRepository.saveAndFlush(review1);
