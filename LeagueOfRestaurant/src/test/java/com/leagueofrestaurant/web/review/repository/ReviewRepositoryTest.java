@@ -6,9 +6,9 @@ import com.leagueofrestaurant.web.member.domain.MemberType;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.repository.ReviewRepositoryCustom;
 import com.leagueofrestaurant.web.review.domain.Review;
-import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
+import org.apache.tomcat.jni.Address;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +40,10 @@ public class ReviewRepositoryTest {
 
     @Test
     public void 전체리뷰_조회() {
-        Address address = new Address("seoul","3cmd","342");
         Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
         Member member2 = new Member("한투정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
-        Store store1 = new Store("가게", address, "dfd");
-        Store store2 = new Store("가게2", address, "dfd");
+        Store store1 = new Store("가게","asd","asd","dfd");
+        Store store2 = new Store("가게2", "Asdas","asd", "dfd");
 
         // Member와 Store를 먼저 저장
         memberRepository.saveAndFlush(member1);

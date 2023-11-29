@@ -5,6 +5,7 @@ import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.store.domain.Store;
+import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.wish.domain.Wish;
 import com.leagueofrestaurant.web.wish.repository.WishRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +34,18 @@ public class WishService {
             throw new LORException(ErrorCode.WRONG_MEMBER_OR_STORE_ID);
         }
     }
+    @Transactional
+    public void deleteWish(Long wishId){
+        wishRepository.deleteById(wishId);
+    }
+
+    /**
+     *  멤버가 찜한 store 목록
+     */
+//    @Transactional
+//    public List<ResponseStoreDto> getWishListByMemberId(Long memberId){
+//
+//    }
 
 
 }

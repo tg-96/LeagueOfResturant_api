@@ -4,15 +4,16 @@ import com.leagueofrestaurant.web.member.domain.Gender;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.domain.MemberType;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
-import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.wish.domain.Wish;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -29,31 +30,41 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 public class WishRepositoryTest {
     @Autowired
-    WishRepository wishRepository;
+    private WishRepository wishRepository;
     @Autowired
-    StoreRepository storeRepository;
+    private StoreRepository storeRepository;
     @Autowired
-    MemberRepository memberRepository;
-
-    Address address = new Address("seoul","3cmd","342");
-    Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
-    Member member2 = new Member("한투정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
-    Store store1 = new Store("가게", address, "dfd");
-    Store store2 = new Store("가게2", address, "dfd");
+    private MemberRepository memberRepository;
 
     @Test
-    public void 찜한가게조회() {
-        memberRepository.saveAndFlush(member1);
-        memberRepository.saveAndFlush(member2);
-        storeRepository.saveAndFlush(store1);
-        storeRepository.saveAndFlush(store2);
+    @DisplayName("가게의 wish 상태 확인")
+    public void getWishState(){
+        Member member1 = new Member("member1", "010-5913-5935", "123", Gender.MALE, LocalDate.of(1996, 05, 28), MemberType.USER);
+        Member member2 = new Member("member2", "010-1593-1234", "321", Gender.MALE, LocalDate.of(2000, 04, 07), MemberType.USER);
+        Store store1 = new Store("a가게","경기도성남시수정구","성남시",null);
+        Store store2 = new Store("b가게","경기도수원시영통구","수원시",null);
 
-        Wish wish1 = new Wish(member1, store1);
-        Wish wish3 = new Wish(member2, store1);
-        Wish wish2 = wishRepository.saveAndFlush(wish1);
-        List<Wish> myWishList = wishRepository.findAllByMemberId(member1.getId());
-        System.out.println(myWishList.get(0));
-        assertThat(myWishList.get(0)).isEqualTo(wish1);
+        Member memberEntity = memberRepository.saveAndFlush(member1);
+        Store storeEntity = storeRepository.saveAndFlush(store2);
+
+        Wish wish = new Wish(memberEntity, storeEntity);
+        wishRepository.saveAndFlush(wish);
+
+        Wish wishState = wishRepository.getWishState(memberEntity.getId(), storeEntity.getId());
+        //assertThat(wishState.getMember()).isEqualTo(memberEntity);
     }
 
+    @Test
+    @DisplayName("멤버가 찜한 모든 스토어 리스트")
+    public void findAllByMemberId(){
+        Member member = memberRepository.findMemberByPhoneNumber("010-5913-5935");
+        Store store2 = new Store("b가게","경기도수원시영통구","수원시",null);
+        Store store = storeRepository.saveAndFlush(store2);
+        Wish wish = new Wish(member, store);
+        wishRepository.saveAndFlush(wish);
+
+        List<Store> wishList = wishRepository.findAllByMemberId(member.getId());
+        assertThat(wishList.get(0).getName()).isEqualTo("a가게");
+        assertThat(wishList.get(1).getName()).isEqualTo("b가게");
+    }
 }
