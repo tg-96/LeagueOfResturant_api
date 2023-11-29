@@ -27,6 +27,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
     private final CommonService commonService;
+//    private final StoreService storeService;
 
 
     //모든 리뷰 조회
@@ -75,16 +76,18 @@ public class ReviewService {
     }
 
     //리뷰 작성
-    public void createReview(long memberId, long storeId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
+    public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
-        Store store = storeRepository.findById(storeId).orElse(null);
+        //영수증 정보의 주소와 가게명으로 store를 찾는 부분
 
-        // 가게가 존재하지 않는 경우 새로운 가게를 생성
-        if (store == null) {
-            // 생성 로직, 여기서 가게 생성을 위한 createStore Service 함수를 호출하면 될 것 같은데
-        }
+        //Store store = storeRepository.findById(storeId).orElse(null);
+
+//        // 가게가 존재하지 않을 경우 생성
+//        if (store == null) {
+//            // 생성 로직, 여기서 가게 생성을 위한 createStore Service 함수를 호출하면 될 것 같은데
+//        }
 
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
