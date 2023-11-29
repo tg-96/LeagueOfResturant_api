@@ -88,9 +88,9 @@ class MemberServiceTest {
         Member entity2 = memberRepository.saveAndFlush(member2);
         Member entity3 = memberRepository.saveAndFlush(member3);
 
-        MemberSearchCondition cond1 = MemberSearchCondition.create("a",null);
-        MemberSearchCondition cond2 = MemberSearchCondition.create("b",null);
-        MemberSearchCondition cond3 = MemberSearchCondition.create("a","2345");
+        MemberSearchCondition cond1 = new MemberSearchCondition("a",null);
+        MemberSearchCondition cond2 = new MemberSearchCondition("b",null);
+        MemberSearchCondition cond3 = new MemberSearchCondition("a","2345");
 
         List<MemberDto> memberDto1 = memberService.getByCondition(cond1);
         List<MemberDto> memberDto2 = memberService.getByCondition(cond2);

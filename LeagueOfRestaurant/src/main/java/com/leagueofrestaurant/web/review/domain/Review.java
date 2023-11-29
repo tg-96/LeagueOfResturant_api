@@ -3,12 +3,22 @@ package com.leagueofrestaurant.web.review.domain;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.store.domain.Store;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeoutException;
 
 @Getter
 @Entity
@@ -41,7 +51,8 @@ public class Review {
         this.season = season;
         this.img = img;
         this.member = member;
-        this.store = store;}
+        this.store = store;
+    }
 
     /**
      * 리뷰 수정

@@ -9,7 +9,6 @@ import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
-import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -89,9 +88,10 @@ public class ReviewService {
 
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
+        String season = commonService.getSeason();
 
         // 리뷰 객체 생성
-//        Review review = new Review(member, store, content, img);
+//        Review review = new Review(member, store, content, season, img);
 
 //        // 데이터베이스에 리뷰 저장
 //        reviewRepository.save(review);
