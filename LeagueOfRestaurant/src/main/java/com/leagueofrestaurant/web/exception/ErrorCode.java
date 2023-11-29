@@ -12,7 +12,8 @@ public enum ErrorCode {
     NO_SESSION("로그인을 하지 않았습니다."),
     NO_EXIST_STORE("조회할 store가 존재하지 않습니다."),
     NOT_EXIST_REVIEW("존재하지 않는 리뷰"),
-    NOT_EXIST_MEMBER("존재하지 않는 회원");
+    NOT_EXIST_MEMBER("존재하지 않는 회원"),
+    RECEIPT_ERROR("영수증 인식 오류");
 
     private final String message;
     ErrorCode(String message) {
