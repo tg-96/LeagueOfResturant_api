@@ -4,12 +4,22 @@ import com.leagueofrestaurant.web.common.BaseTimeEntity;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.store.domain.Store;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeoutException;
 
 @Getter
 @Entity
@@ -23,6 +33,7 @@ public class Review extends BaseTimeEntity{
     private Integer ratingPoint;
     @NotBlank(message = "content를 작성해야 합니다.")
     private String content;
+    private String season;
     private String img;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -34,10 +45,11 @@ public class Review extends BaseTimeEntity{
     /**
      * 리뷰 생성
      */
-    public Review(int ratingPoint, String content, String img,
+    public Review(int ratingPoint, String content, String season, String img,
                   Member member, Store store) {
         this.ratingPoint = ratingPoint;
         this.content = content;
+        this.season = season;
         this.img = img;
         this.member = member;
         this.store = store;
@@ -54,6 +66,10 @@ public class Review extends BaseTimeEntity{
         this.content = content;
     }
 
+    public void changeSeason(String season){
+        this.season = season;
+    }
+
     public void changeImg(String img) {
         this.img = img;
     }
@@ -61,5 +77,6 @@ public class Review extends BaseTimeEntity{
     public void memberToNull(){
         this.member = null;
     }
+
 }
 
