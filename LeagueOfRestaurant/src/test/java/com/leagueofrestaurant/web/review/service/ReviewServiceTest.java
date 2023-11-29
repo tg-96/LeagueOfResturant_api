@@ -15,10 +15,4 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReviewServiceTest {
     @Autowired
     ReviewService reviewService;
-    @Test
-    public void 날짜테스트(){
-        String a = reviewService.getSeasonTest();
-        System.out.println(a);
-    }
-
 }
