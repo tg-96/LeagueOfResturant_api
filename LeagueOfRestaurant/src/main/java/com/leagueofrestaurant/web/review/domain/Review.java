@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.domain;
 
+import com.leagueofrestaurant.web.common.BaseTimeEntity;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.store.domain.Store;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseTimeEntity{
     @Id
     @GeneratedValue
     @Column(name = "review_id")
