@@ -2,6 +2,7 @@ package com.leagueofrestaurant.web.member.domain;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.leagueofrestaurant.web.common.BaseTimeEntity;
 import com.leagueofrestaurant.web.member.util.Encryptor;
 import com.leagueofrestaurant.web.report.domain.Type;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
     @GeneratedValue
     @Id
     @Column(name = "member_id")
