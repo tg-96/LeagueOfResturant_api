@@ -11,6 +11,7 @@ import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
+import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
     private final CommonService commonService;
-//    private final StoreService storeService;
+    private final StoreService storeService;
 
 
     //모든 리뷰 조회
@@ -81,8 +82,8 @@ public class ReviewService {
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
         //영수증 정보의 주소와 가게명으로 store를 찾는 부분
-
-        //Store store = storeRepository.findById(storeId).orElse(null);
+        String storeName = receiptInfo.getStoreName();
+        //Store store = storeService.getStoreListByCondition();
 
 //        // 가게가 존재하지 않을 경우 생성
 //        if (store == null) {
