@@ -46,7 +46,10 @@ public class WishService {
      */
     public List<ResponseStoreDto> getWishListByMemberId(Long memberId) {
         List<Store> wishList = wishRepository.findAllByMemberId(memberId);
-        List<ResponseStoreDto> responseStoreDtoList =wishList.stream()
+        if(wishList.size() == 0){
+            throw new LORException(ErrorCode.NO_WISHLIST);
+        }
+        List<ResponseStoreDto> responseStoreDtoList = wishList.stream()
                 .map(w -> new ResponseStoreDto(
                         w.getId(),
                         w.getName(),
@@ -56,10 +59,22 @@ public class WishService {
                 .collect(Collectors.toList());
         return responseStoreDtoList;
     }
-    public boolean getWishState(Long memberId,Long storeId){
-        Wish wishState = wishRepository.getWishState(memberId, storeId);
-        if(wishState == null) return false;
-        return true;
+
+    public Wish getWish(Long memberId, Long storeId) {
+        return wishRepository.getWishState(memberId, storeId);
+    }
+
+    @Transactional
+    public void changeWishState(Long memberId, Long storeId) {
+        Wish wish = getWish(memberId, storeId);
+        //찜 상태라면 찜 해제
+        if (wish != null) {
+            deleteWish(wish.getId());
+        }
+        //찜 상태가 아니라면, 찜하기
+        else {
+            addWish(memberId, storeId);
+        }
     }
 
 

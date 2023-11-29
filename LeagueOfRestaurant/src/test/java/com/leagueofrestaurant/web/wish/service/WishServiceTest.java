@@ -85,13 +85,12 @@ class WishServiceTest {
         assertThat(wishList.get(0).getName()).isEqualTo("Restaurant A");
     }
 
+
     @Test
-    @DisplayName("wish 상태조회")
-    public void getWishState(){
-        boolean wishState1 = wishService.getWishState(1L, 2L);
-        boolean wishState2 = wishService.getWishState(12L, 2L);
-        assertThat(wishState1).isTrue();
-        assertThat(wishState2).isFalse();
+    @DisplayName("wish 삭제")
+    @Rollback(value = false)
+    public void delete(){
+        wishService.deleteWish(3L);
     }
 
 
