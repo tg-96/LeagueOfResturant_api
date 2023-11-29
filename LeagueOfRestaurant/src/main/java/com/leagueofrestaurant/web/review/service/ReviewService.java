@@ -12,6 +12,8 @@ import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
+import com.leagueofrestaurant.web.store.domain.Store;
+import com.leagueofrestaurant.web.store.dto.RequestStoreDto;
 import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
@@ -63,7 +65,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
         return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +74,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
 
         return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
@@ -94,37 +96,42 @@ public class ReviewService {
         }
     }
 
-    //리뷰 작성
+    @Transactional
     public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
-        //member가 존재하지 않는 경우 예외 처리
+        // member가 존재하지 않는 경우 예외 처리
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
-        //영수증 정보에서 가게명, 주소 추출
+        // 영수증 정보에서 가게명, 주소 추출
         String storeName = receiptInfo.getStoreName();
         String address = receiptInfo.getAddress();
 
-        //가게명과 주소로 store를 찾기
+        // 가게명과 주소로 store를 찾기
         StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
-        List<ResponseStoreDto> store = storeService.getStoreListByCondition(storeSearchCondition);
+        List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
 
-        //if: store가 존재하지 않을 경우,
-        // - 가게 생성을 위한 storeservice의 createStore를 호출
-        // - 생성한 가게 자체를 targetStore에 할당
-        //else: 존재하는 경우,
-        // - 존재하는 가게 자체를 targetStore에 할당
+        ResponseStoreDto targetStore;
 
+        if (stores.isEmpty()) { // 존재하지 않을 경우 : 가게 생성
+            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, null, null);
+            try {
+                storeService.createStore(requestStoreDto);
+            } catch(IllegalArgumentException e) {
+                throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
+            }
+        }
+
+        stores = storeService.getStoreListByCondition(storeSearchCondition);
+        targetStore = stores.get(0);
+
+        // 여기서 리뷰 객체 생성 및 데이터베이스에 저장하는 부분을 진행
         String season = commonService.getSeason();
-        //if: 이미 현재 season에 targetStore에 작성한 리뷰가 있는 경우... exception 처리
-
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
+        Integer ratingPoint = reviewContent.getRatingPoint();
 
-        //리뷰 객체 생성
-        //Review review = new Review(member, targetStore, content, season, img);
-
-        //데이터베이스에 리뷰 저장
-        //reviewRepository.save(review);
+        Review review = new Review(ratingPoint, content, season, img, member, targetStore);
+        reviewRepository.save(review);
     }
 
     // 리뷰 삭제

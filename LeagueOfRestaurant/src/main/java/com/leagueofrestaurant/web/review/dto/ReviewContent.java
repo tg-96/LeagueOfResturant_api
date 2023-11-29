@@ -11,6 +11,7 @@ import lombok.Setter;
 
 public class ReviewContent {
     private String content;
+    private Integer ratingPoint;
     private String img;
     private String season;
 }
