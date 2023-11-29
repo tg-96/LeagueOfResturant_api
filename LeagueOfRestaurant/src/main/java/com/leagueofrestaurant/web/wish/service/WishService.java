@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,29 +23,44 @@ public class WishService {
     private final WishRepository wishRepository;
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
+
     @Transactional
-    public void addWish(Long memberId,Long storeId){
+    public void addWish(Long memberId, Long storeId) {
         try {
             Member member = memberRepository.findById(memberId).get();
             Store store = storeRepository.findById(storeId).get();
             Wish wish = new Wish(member, store);
             wishRepository.save(wish);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new LORException(ErrorCode.WRONG_MEMBER_OR_STORE_ID);
         }
     }
+
     @Transactional
-    public void deleteWish(Long wishId){
+    public void deleteWish(Long wishId) {
         wishRepository.deleteById(wishId);
     }
 
     /**
-     *  멤버가 찜한 store 목록
+     * 멤버가 찜한 store 목록
      */
-//    @Transactional
-//    public List<ResponseStoreDto> getWishListByMemberId(Long memberId){
-//
-//    }
+    public List<ResponseStoreDto> getWishListByMemberId(Long memberId) {
+        List<Store> wishList = wishRepository.findAllByMemberId(memberId);
+        List<ResponseStoreDto> responseStoreDtoList =wishList.stream()
+                .map(w -> new ResponseStoreDto(
+                        w.getId(),
+                        w.getName(),
+                        w.getAddress(),
+                        w.getCity(),
+                        w.getImg()))
+                .collect(Collectors.toList());
+        return responseStoreDtoList;
+    }
+    public boolean getWishState(Long memberId,Long storeId){
+        Wish wishState = wishRepository.getWishState(memberId, storeId);
+        if(wishState == null) return false;
+        return true;
+    }
 
 
 }
