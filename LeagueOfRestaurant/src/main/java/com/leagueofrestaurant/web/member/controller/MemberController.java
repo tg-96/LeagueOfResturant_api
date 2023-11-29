@@ -30,18 +30,21 @@ public class MemberController {
     public List<MemberDto> getMemberByCondition(@ModelAttribute MemberSearchCondition condition) {
         return memberService.getByCondition(condition);
     }
-    @PostMapping("/members/edit/{id}")
+
+    @PutMapping("/members/edit/{id}")
     public ResponseEntity<Void> editMemberInfo(@PathVariable("id") Long memberId, @RequestBody MemberEditReq req) {
         memberService.editMember(req, memberId);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("/members/delete/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("id")Long memberId){
+    public ResponseEntity<Void> deleteMember(@PathVariable("id") Long memberId) {
         memberService.deleteMember(memberId);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/members/auth")
-    public ResponseEntity<Void> authentication(HttpSession session){
+    public ResponseEntity<Void> authentication(HttpSession session) {
         return memberService.authentication(session);
     }
 }
