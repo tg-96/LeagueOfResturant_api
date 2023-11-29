@@ -12,6 +12,8 @@ import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
+import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
+import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -76,18 +78,9 @@ public class ReviewService {
 
     //영수증 인증
     public ReceiptInfo getReceiptInfo(MultipartFile image) throws IOException {
-        //receiptImg = "/Users/hangyujeong/Desktop/영수증테스트/가은.png"; //테스트용
         String response = ocrService.getReceiptJSON(image);
         JsonNode jsonNode = objectMapper.readTree(response);
-
-//        File jsonFile = new File("/Users/hangyujeong/Desktop/영수증테스트/tomtom.json");
-//        // ObjectMapper를 사용하여 JSON 파일을 JsonNode로 변환
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode jsonNode = objectMapper.readTree(jsonFile);
-
-        // ocrService.getReceiptInfo 메서드에 전달
         List<String> receiptData = ocrService.getReceiptInfo(jsonNode);
-
 
         String message = receiptData.get(0); //성공 여부
 
@@ -106,13 +99,14 @@ public class ReviewService {
         //member가 존재하지 않는 경우 예외 처리
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
+
         //영수증 정보에서 가게명, 주소 추출
-        //String storeName = receiptInfo.getStoreName();
-        //Address address = receiptInfo.getAddress();
+        String storeName = receiptInfo.getStoreName();
+        String address = receiptInfo.getAddress();
 
         //가게명과 주소로 store를 찾기
-//        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
-//        List<StoreDto> store = storeService.getStoreListByCondition(storeSearchCondition);
+        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
+        List<ResponseStoreDto> store = storeService.getStoreListByCondition(storeSearchCondition);
 
         //if: store가 존재하지 않을 경우,
         // - 가게 생성을 위한 storeservice의 createStore를 호출
@@ -121,11 +115,10 @@ public class ReviewService {
         // - 존재하는 가게 자체를 targetStore에 할당
 
         String season = commonService.getSeason();
-
         //if: 이미 현재 season에 targetStore에 작성한 리뷰가 있는 경우... exception 처리
+
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
-
 
         //리뷰 객체 생성
         //Review review = new Review(member, targetStore, content, season, img);
@@ -134,12 +127,17 @@ public class ReviewService {
         //reviewRepository.save(review);
     }
 
-    //리뷰 삭제
+    // 리뷰 삭제
+    @Transactional
     public void deleteReview(long reviewId) {
-        if (reviewRepository.existsById(reviewId)) {
-            reviewRepository.deleteById(reviewId);
-        } else {
-            throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
+        try {
+            Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_REVIEW));
+            review.softDeleted();
+            reviewRepository.save(review); // 변경된 상태를 데이터베이스에 반영
+            System.out.println("삭제 완료");
+        } catch (IllegalArgumentException e) {
+            throw new LORException(ErrorCode.FAIL_TO_DELETE_REVIEW);
         }
     }
+
 }
