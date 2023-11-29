@@ -1,9 +1,8 @@
 package com.leagueofrestaurant.web.store.controller;
 
-import com.leagueofrestaurant.web.store.dto.StoreDto;
+import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.service.StoreService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,17 +17,17 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/store/{id}")
-    public StoreDto getStoreById(@PathVariable("id")Long storeId){
+    public ResponseStoreDto getStoreById(@PathVariable("id")Long storeId){
         return storeService.getStoreById(storeId);
     }
 
     @GetMapping("/stores")
-    public List<StoreDto> getAllStores(){
+    public List<ResponseStoreDto> getAllStores(){
         return storeService.getAllStores();
     }
 
     @GetMapping("/stores/condition")
-    public List<StoreDto> getStoreListByCondition(@ModelAttribute StoreSearchCondition condition){
+    public List<ResponseStoreDto> getStoreListByCondition(@ModelAttribute StoreSearchCondition condition){
         return storeService.getStoreListByCondition(condition);
     }
 

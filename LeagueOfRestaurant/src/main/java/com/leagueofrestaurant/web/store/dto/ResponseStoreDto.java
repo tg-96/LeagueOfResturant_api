@@ -1,19 +1,20 @@
 package com.leagueofrestaurant.web.store.dto;
 
-import com.leagueofrestaurant.web.store.domain.Address;
 import lombok.Getter;
 
 @Getter
-public class StoreDto {
+public class ResponseStoreDto {
     private Long id;
     private String name;
-    private Address adress;
+    private String adress;
+    private String city;
     private String img;
 
-    public StoreDto(String name, Address adress, String img,Long id) {
+    public ResponseStoreDto(Long id, String name, String adress, String city, String img) {
+        this.id = id;
         this.name = name;
         this.adress = adress;
+        this.city = city;
         this.img = img;
-        this.id = id;
     }
 }
