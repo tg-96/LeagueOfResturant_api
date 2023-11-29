@@ -29,7 +29,7 @@ class StoreServiceTest {
     @DisplayName("스토어 생성")
     public void createStore() {
         StoreDto storeDto1 = new StoreDto("jeong",
-                new Address("e", "f", "g"),
+                new Address("a", "f", "g"),
                 null
         );
         storeService.createStore(storeDto1);
