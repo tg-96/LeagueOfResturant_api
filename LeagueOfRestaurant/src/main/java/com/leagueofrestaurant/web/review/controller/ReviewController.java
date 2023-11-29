@@ -1,13 +1,14 @@
 package com.leagueofrestaurant.web.review.controller;
 
+import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -40,6 +41,10 @@ public class ReviewController {
     }
 
     //영수증 인증
+    @PostMapping("/receipt")
+    public ReceiptInfo getReceiptInfo(@RequestParam("image") MultipartFile image) throws IOException {
+        return reviewService.getReceiptInfo(image);
+    }
 
     //리뷰 작성
 

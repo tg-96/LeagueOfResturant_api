@@ -1,4 +1,5 @@
 package com.leagueofrestaurant.web.review.service;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leagueofrestaurant.api.ocr.OcrService;
@@ -7,18 +8,16 @@ import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.review.domain.Review;
-//import com.leagueofrestaurant.web.member.dto.MemberDto;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
-import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -76,22 +75,29 @@ public class ReviewService {
     }
 
     //영수증 인증
-    public ReceiptInfo getReceiptInfo(String receiptImg) throws IOException {
-        receiptImg = "/Users/hangyujeong/Desktop/영수증테스트/tom.png"; //테스트용
-        String response = ocrService.getReceiptJSON(receiptImg);
+    public ReceiptInfo getReceiptInfo(MultipartFile image) throws IOException {
+        //receiptImg = "/Users/hangyujeong/Desktop/영수증테스트/가은.png"; //테스트용
+        String response = ocrService.getReceiptJSON(image);
         JsonNode jsonNode = objectMapper.readTree(response);
+
+//        File jsonFile = new File("/Users/hangyujeong/Desktop/영수증테스트/tomtom.json");
+//        // ObjectMapper를 사용하여 JSON 파일을 JsonNode로 변환
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode jsonNode = objectMapper.readTree(jsonFile);
+
+        // ocrService.getReceiptInfo 메서드에 전달
         List<String> receiptData = ocrService.getReceiptInfo(jsonNode);
+
 
         String message = receiptData.get(0); //성공 여부
 
-        if (!"SUCCESS".equals(message)) {
+        if (!"SUCCESS".equals(message)) { //실패
             throw new LORException(ErrorCode.RECEIPT_ERROR);
         }
         else{ //성공
             String storeName = receiptData.get(1);
             String storeAddress = receiptData.get(2);
-            //ReceiptInfo receiptInfo = new ReceiptInfo(storeName, storeAddress);
-            //return receiptInfo;
+            return new ReceiptInfo(storeName, storeAddress);
         }
     }
 
@@ -100,7 +106,6 @@ public class ReviewService {
         //member가 존재하지 않는 경우 예외 처리
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
-
         //영수증 정보에서 가게명, 주소 추출
         //String storeName = receiptInfo.getStoreName();
         //Address address = receiptInfo.getAddress();
