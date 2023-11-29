@@ -3,7 +3,6 @@ package com.leagueofrestaurant.web.store.service;
 import com.leagueofrestaurant.web.store.domain.Address;
 import com.leagueofrestaurant.web.store.dto.StoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -46,25 +45,25 @@ class StoreServiceTest {
 
     @Test
     @DisplayName("모든 가게 조회")
-    public void getAllStores(){
+    public void getAllStores() {
         List<StoreDto> stores = storeService.getAllStores();
         assertThat(stores.size()).isEqualTo(2);
     }
 
     @Test
     @DisplayName("스토어 정보 변경")
-    public void updateStore(){
-        StoreDto storeDto = new StoreDto("jeong",null,null);
-        storeService.updateStore(3L,storeDto);
+    public void updateStore() {
+        StoreDto storeDto = new StoreDto("jeong", null, null);
+        storeService.updateStore(3L, storeDto);
         StoreDto store = storeService.getStoreById(3L);
         assertThat(store.getName()).isEqualTo("jeong");
     }
 
     @Test
     @DisplayName("조건에 따른 가게 검색")
-    public void getStoreListByCondition(){
-        StoreSearchCondition cond1 = new StoreSearchCondition("jeong",null);
-        StoreSearchCondition cond2 = new StoreSearchCondition("jeong",new Address("a","b","c"));
+    public void getStoreListByCondition() {
+        StoreSearchCondition cond1 = new StoreSearchCondition("jeong", null);
+        StoreSearchCondition cond2 = new StoreSearchCondition(null, new Address("a", null, null);
         List<StoreDto> storeDtoList1 = storeService.getStoreListByCondition(cond1);
         List<StoreDto> storeDtoList2 = storeService.getStoreListByCondition(cond2);
         assertThat(storeDtoList1.size()).isEqualTo(2);
