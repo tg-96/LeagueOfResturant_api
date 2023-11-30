@@ -21,6 +21,7 @@ import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
@@ -109,32 +110,36 @@ public class ReviewService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
-        // 영수증 정보에서 가게명, 주소 추출
+        // 영수증 정보에서 가게명, 주소, 도시명 추출
         String storeName = receiptInfo.getStoreName();
         String address = receiptInfo.getAddress();
+        String city = commonService.getCityString(address);
 
         // 시즌 추출
         String season = commonService.getSeason();
 
         // 가게명과 주소로 store를 찾기
-        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
+        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, city, address);
         List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
 
-        if (stores.isEmpty()) { // 존재하지 않을 경우 : 가게 생성
-            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, null, null);
+        if (stores.isEmpty()) { // 가게가 존재하지 않을 경우: 가게 생성
+            /* 가게 이미지를 넣는 로직 */
+            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, null);
             try {
                 storeService.createStore(requestStoreDto);
-            } catch(IllegalArgumentException e) {
+                TransactionAspectSupport.currentTransactionStatus().flush(); // 트랜잭션이 커밋될 때까지 대기
+            } catch (IllegalArgumentException e) {
                 throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
             }
         }
-        else { // 존재하는 경우 : 시즌 내 동일 가게에 리뷰 이력 있는지 확인
+        else { // 가게가 존재하는 경우: 시즌 내에 해당 가게에 리뷰한 적 있다면 throw
             List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getId(), season);
             if(!(seasonReviews.isEmpty())){
                 throw new LORException(ErrorCode.DUPLICATE_REVIEW);
             }
         }
 
+        //리뷰가 적힐 Store targeting
         List<Store> targetStores = storeRepository.findStoreListByCondition(storeSearchCondition);
         Store targetStore = targetStores.get(0);
         String content = reviewContent.getContent();
