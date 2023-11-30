@@ -7,6 +7,7 @@ import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.report.domain.Report;
 import com.leagueofrestaurant.web.report.dto.ReportDto;
+import com.leagueofrestaurant.web.report.dto.UpdateReportDto;
 import com.leagueofrestaurant.web.report.repository.ReportRepository;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
@@ -47,7 +48,20 @@ public class ReportService {
         }
     }
 
-    //처리상태 업데이트
+    // 신고 처리상태 업데이트
+    @Transactional
+    public void updateReportStatus(UpdateReportDto updateReportDto, Long reportId) {
+        Status updatedStatus = updateReportDto.getStatus();
+        Optional<Report> updatedReportOptional = reportRepository.findById(reportId);
+
+        if (updatedReportOptional.isPresent()) {
+            Report updatedReport = updatedReportOptional.get();
+            updatedReport.setStatus(updatedStatus);
+            reportRepository.save(updatedReport);
+        } else {
+            throw new LORException(ErrorCode.NOT_EXIST_REPORT);
+        }
+    }
 
     //모든 신고내역 조회
     public List<ReportDto> getAllReports() {
@@ -73,10 +87,10 @@ public class ReportService {
     // 특정 회원의 신고내역 조회
     public List<ReportDto> getReportsByMemberId(Long memberId) {
         List<Report> reports = reportRepository.findAllByMemberId(memberId);
-
         return reports.stream()
                 .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
                 .collect(Collectors.toList());
+
     }
 
     // 처리상태로 신고내역 조회

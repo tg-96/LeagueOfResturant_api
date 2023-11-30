@@ -7,6 +7,7 @@ import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.member.service.MemberService;
 import com.leagueofrestaurant.web.report.dto.ReportDto;
+import com.leagueofrestaurant.web.report.dto.UpdateReportDto;
 import com.leagueofrestaurant.web.report.service.ReportService;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
@@ -27,7 +28,7 @@ public class ReportController {
 
     @Autowired
     ReviewService reviewService;
-    MemberService memberService;
+
     // 신고 생성
     @PostMapping("/")
     public ResponseEntity<String> createReport(@RequestBody ReportDto reportDto){
@@ -45,6 +46,16 @@ public class ReportController {
     @GetMapping("/{reportId}")
     public ReportDto getReportById(@PathVariable Long reportId) {
         return reportService.getReportById(reportId);
+    }
+
+    // 특정 신고 처리상태 변경
+    @PutMapping("/{reportId}")
+    public ResponseEntity<String> updateReportStatus(
+            @RequestBody UpdateReportDto updateReportDto,
+            @PathVariable Long reportId
+    ) {
+        reportService.updateReportStatus(updateReportDto, reportId);
+        return ResponseEntity.ok("Report status updated successfully");
     }
 
     // 특정 회원의 신고내역 조회
