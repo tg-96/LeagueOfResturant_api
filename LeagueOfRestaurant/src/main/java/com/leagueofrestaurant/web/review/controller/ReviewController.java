@@ -1,13 +1,17 @@
 package com.leagueofrestaurant.web.review.controller;
 
+import com.leagueofrestaurant.web.exception.LORException;
+import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
+import com.leagueofrestaurant.web.review.dto.ReviewRequest;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -19,6 +23,13 @@ public class ReviewController {
     @GetMapping("/")
     public List<ReviewContent> getAllReviews() {
         return reviewService.getAllReviews();
+    }
+
+    //리뷰 작성
+    @PostMapping("/")
+    public ResponseEntity<String> createReview(@RequestBody ReviewRequest reviewRequest) {
+        reviewService.createReview(reviewRequest.getMemberId(), reviewRequest.getReviewContent(), reviewRequest.getReceiptInfo());
+        return ResponseEntity.ok("Review created successfully");
     }
 
     //특정 리뷰 조회
@@ -40,13 +51,15 @@ public class ReviewController {
     }
 
     //영수증 인증
-
-    //리뷰 작성
+    @PostMapping("/receipt")
+    public ReceiptInfo getReceiptInfo(@RequestParam("image") MultipartFile image) throws IOException {
+        return reviewService.getReceiptInfo(image);
+    }
 
     //리뷰 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
+    public ResponseEntity<String> deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Review deleted successfully");
     }
 }

@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.repository;
 
+<<<<<<< HEAD
 import com.leagueofrestaurant.web.member.domain.Gender;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.domain.MemberType;
@@ -7,6 +8,10 @@ import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.repository.ReviewRepositoryCustom;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.store.domain.Store;
+=======
+import com.leagueofrestaurant.web.review.service.ReviewService;
+import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
+>>>>>>> feat/review-svc
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import org.apache.tomcat.jni.Address;
 import org.junit.Test;
@@ -17,28 +22,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class ReviewRepositoryTest {
+
+
+class ReviewRepositoryTest {
     @Autowired
     ReviewRepository reviewRepository;
-
-    @Autowired
     StoreRepository storeRepository;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    ReviewRepositoryCustomImpl reviewRepositoryCustomImpl;
-
     @Test
+<<<<<<< HEAD
     public void 전체리뷰_조회() {
         Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
         Member member2 = new Member("한투정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
@@ -86,5 +82,10 @@ public class ReviewRepositoryTest {
 
 
         // 테스트 검증
+=======
+    public void 테스트() {
+//        StoreSearchCondition storeSearchCondition = new StoreSearchCondition('탐앤탐스 아주대점', '수원');
+//        storeRepository.findStoreListByCondition()
+>>>>>>> feat/review-svc
     }
 }

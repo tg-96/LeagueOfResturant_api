@@ -1,16 +1,17 @@
 package com.leagueofrestaurant.web.review.dto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class ReviewContent {
     private String content;
+    private Integer ratingPoint;
     private String img;
     private String season;
-    public static ReviewContent create(String content, String img, String season){
-        ReviewContent reviewContent = new ReviewContent();
-        reviewContent.content = content;
-        reviewContent.img = img;
-        reviewContent.season = season;
-        return reviewContent;
-    }
 }
