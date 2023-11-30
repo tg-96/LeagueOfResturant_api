@@ -2,8 +2,10 @@ package com.leagueofrestaurant.web.review.repository;
 
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import javax.persistence.EntityManager;
 import java.util.List;
+
 import static com.leagueofrestaurant.web.review.domain.QReview.review;
 
 public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
@@ -41,4 +43,13 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 )
                 .fetch();
     }
+
+    public Long countByStoreId(Long storeId) {
+        return queryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.store.id.eq(storeId))
+                .fetchOne();
+    }
+
 }

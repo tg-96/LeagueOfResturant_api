@@ -15,6 +15,8 @@ import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import org.apache.tomcat.jni.Address;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -87,5 +89,12 @@ class ReviewRepositoryTest {
 //        StoreSearchCondition storeSearchCondition = new StoreSearchCondition('탐앤탐스 아주대점', '수원');
 //        storeRepository.findStoreListByCondition()
 >>>>>>> feat/review-svc
+    }
+
+    @Test
+    @DisplayName("가게의 리뷰수 카운트")
+    public void countReview(){
+        Long count = reviewRepository.countByStoreId(2L);
+        assertThat(count).isEqualTo(1);
     }
 }
