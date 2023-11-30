@@ -30,7 +30,8 @@ public class StoreController {
     public List<ResponseStoreDto> getStoreListByCondition(@ModelAttribute StoreSearchCondition condition){
         return storeService.getStoreListByCondition(condition);
     }
-
-
-
+    @GetMapping("/stores/rank/{city}")
+    public List<ResponseStoreDto> getStoreRankByCity(@PathVariable String city){
+        return storeService.getStoreRankByCity(city);
+    }
 }

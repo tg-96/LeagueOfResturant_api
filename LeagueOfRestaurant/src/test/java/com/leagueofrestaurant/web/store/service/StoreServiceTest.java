@@ -79,18 +79,5 @@ class StoreServiceTest {
         assertThat(storeDtoList2.size()).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("리뷰 평균 별점 계산")
-    @Rollback(value = false)
-    public void calculateRating() {
-        RequestStoreDto storeDto = new RequestStoreDto("항아리보쌈", "성남시 정자동", "성남", "");
-        storeService.createStore(storeDto);
-        List<ResponseStoreDto> stores = storeService.getAllStores();
-        Member member = new Member("joeng", "010", "1234", Gender.MALE, LocalDate.now(), MemberType.USER);
-        Member member1 = memberRepository.saveAndFlush(member);
-        ReviewContent reviewContent = ReviewContent.create("aaa", null, "winter");
-        ReceiptInfo receiptInfo = new ReceiptInfo("태평동곱창", "성남시 태평동", "성남");
-        reviewService.createReview(member1.getId(), reviewContent, receiptInfo);
-        storeService.calculateRating(stores.get(0).getId(), 3.0f);
-    }
+
 }

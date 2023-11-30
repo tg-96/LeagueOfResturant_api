@@ -55,9 +55,11 @@ public class Store {
             this.city = storeDto.getCity();
         }
     }
-
     public void changeRating(float rating){
         this.rating = rating;
+    }
+    public void changeScore(float score){
+        this.score = score;
     }
 
 

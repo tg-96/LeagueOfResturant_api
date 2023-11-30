@@ -33,6 +33,10 @@ public class StoreService {
         List<Store> storeList = storeRepository.findAll();
         return getStoreDtoList(storeList);
     }
+    public List<ResponseStoreDto> getStoreRankByCity(String city){
+        List<Store> storeList = storeRepository.findRankListByCity(city);
+        return getStoreDtoList(storeList);
+    }
 
     public List<ResponseStoreDto> getStoreListByCondition(StoreSearchCondition condition) {
         List<Store> storeList = storeRepository.findStoreListByCondition(condition);
@@ -58,13 +62,13 @@ public class StoreService {
 
     /**
      * 리뷰 추가 될때 스토어의 평균 별점 계산후 수정
+     * 리뷰를 추가하면 리뷰가 먼저 추가된 값이 count로 들어옴.
      */
     @Transactional
-    public void calculateRating(Long storeId, float rating) {
-        Store store = storeRepository.findById(storeId).get();
-        Long count = reviewRepository.countByStoreId(storeId);
+    public void calculateRating(Store store, float rating) {
+        Long count = reviewRepository.countByStoreId(store.getId());
         //(가게 평균별점*리뷰수 +새로운 리뷰별점)/(리뷰수+1) = 새로운 평균별점
-        float newRating = (store.getRating() * count + rating) / (count + 1);
+        float newRating = (store.getRating() * (count-1) + rating) / count;
         store.changeRating(newRating);
     }
 
@@ -74,14 +78,13 @@ public class StoreService {
      * 리뷰 1개당 2점
      */
     @Transactional
-    public void calculateScore(Long storeId) {
-        Store store = storeRepository.findById(storeId).get();
+    public void calculateScore(Store store) {
         //별점 5점 만점일때, 총점 700점으로 변경
         float rating = store.getRating();
         float ratingScore = 700 * rating / 5;
 
         //리뷰수 점수 : 1개당 2점,최대 300점
-        Long reviewCount = reviewRepository.countByStoreId(storeId);
+        Long reviewCount = reviewRepository.countByStoreId(store.getId());
         float reviewScore = reviewCount * 2;
         if (reviewScore >= 300) reviewScore = 300;
         //총 점수
@@ -89,6 +92,7 @@ public class StoreService {
         //소수 첫째자리까지만 score 나타냄.
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         float formattedTotalScore = Float.parseFloat(decimalFormat.format(totalScore));
+        store.changeScore(formattedTotalScore);
     }
 
     private static List<ResponseStoreDto> getStoreDtoList(List<Store> storeList) {
