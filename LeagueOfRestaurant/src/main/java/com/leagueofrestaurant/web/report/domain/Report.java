@@ -3,21 +3,13 @@ package com.leagueofrestaurant.web.report.domain;
 import com.leagueofrestaurant.web.common.Status;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.member.domain.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-/**
- * 리뷰에 답글 다는 기능 향후 추가하면 좋을 듯
- *
- * 신고 type 추가 해야함.
- */
-
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class
 Report {
@@ -25,6 +17,7 @@ Report {
     @Id
     @Column(name = "report_id")
     private long id;
+    @Enumerated(EnumType.STRING)
     private Type type;
     private String content;
     @Enumerated(EnumType.STRING)
