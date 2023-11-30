@@ -153,6 +153,8 @@ public class ReviewService {
         reviewRepository.save(review);
 
         //targetStore의 평균 별점을 업데이트.. 그리고 실시간 점수(score 계산)
+        storeService.calculateRating(targetStore,(float)ratingPoint);
+        storeService.calculateScore(targetStore);
     }
 
     // 리뷰 삭제

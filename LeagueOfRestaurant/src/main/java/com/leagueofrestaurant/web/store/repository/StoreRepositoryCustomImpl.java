@@ -29,6 +29,14 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Store> findRankListByCity(String city) {
+        return query.selectFrom(store)
+                .where(eqCity(city))
+                .orderBy(store.score.desc())
+                .fetch();
+    }
+
     private BooleanExpression eqName(String nameCond) {
         return hasText(nameCond) ? store.name.containsIgnoreCase(nameCond) : null;
     }
@@ -40,4 +48,5 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private BooleanExpression eqAddress(String address) {
         return hasText(address) ? store.address.containsIgnoreCase(address) : null;
     }
+
 }
