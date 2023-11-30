@@ -6,14 +6,14 @@ import lombok.Getter;
 public class ResponseStoreDto {
     private Long id;
     private String name;
-    private String adress;
+    private String address;
     private String city;
     private String img;
 
-    public ResponseStoreDto(Long id, String name, String adress, String city, String img) {
+    public ResponseStoreDto(Long id, String name, String address, String city, String img) {
         this.id = id;
         this.name = name;
-        this.adress = adress;
+        this.address = address;
         this.city = city;
         this.img = img;
     }

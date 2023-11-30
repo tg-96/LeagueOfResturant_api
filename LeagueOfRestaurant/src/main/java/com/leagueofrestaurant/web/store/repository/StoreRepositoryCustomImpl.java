@@ -1,6 +1,5 @@
 package com.leagueofrestaurant.web.store.repository;
 
-import com.leagueofrestaurant.web.store.domain.QStore;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -24,7 +23,8 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         return query.selectFrom(store)
                 .where(
                         eqName(condition.getName()),
-                        eqCity(condition.getCity())
+                        eqCity(condition.getCity()),
+                        eqAddress(condition.getAddress())
                 )
                 .fetch();
     }
@@ -35,5 +35,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     private BooleanExpression eqCity(String city) {
         return hasText(city) ? store.city.containsIgnoreCase(city) : null;
+    }
+
+    private BooleanExpression eqAddress(String address) {
+        return hasText(address) ? store.address.containsIgnoreCase(address) : null;
     }
 }

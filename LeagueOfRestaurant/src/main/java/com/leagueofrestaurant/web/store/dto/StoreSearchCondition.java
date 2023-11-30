@@ -1,6 +1,5 @@
 package com.leagueofrestaurant.web.store.dto;
 
-import com.leagueofrestaurant.web.common.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +10,11 @@ import lombok.Setter;
 public class StoreSearchCondition {
     private String name;
     private String city;
-    public StoreSearchCondition(String name,String city) {
+    private String address;
+
+    public StoreSearchCondition(String name, String city, String address) {
         this.name = name;
         this.city = city;
+        this.address = address;
     }
 }

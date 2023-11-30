@@ -4,7 +4,6 @@ import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.review.domain.Review;
-//import com.leagueofrestaurant.web.member.dto.MemberDto;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
