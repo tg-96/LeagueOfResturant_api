@@ -41,7 +41,6 @@ public class Review extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
-    private boolean isDeleted;
 
     /**
      * 리뷰 생성
@@ -54,7 +53,6 @@ public class Review extends BaseTimeEntity{
         this.img = img;
         this.member = member;
         this.store = store;
-        this.isDeleted = false;
     }
 
     /**
@@ -80,8 +78,5 @@ public class Review extends BaseTimeEntity{
         this.member = null;
     }
 
-    public void softDeleted(){
-        this.isDeleted = true;
-    }
 }
 

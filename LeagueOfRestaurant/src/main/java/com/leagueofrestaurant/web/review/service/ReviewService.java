@@ -110,20 +110,19 @@ public class ReviewService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
-        // 영수증 정보에서 가게명, 주소, 도시명 추출
+        // 영수증 정보에서 가게명, 주소, 도시명 추출, 시즌 추출
         String storeName = receiptInfo.getStoreName();
         String address = receiptInfo.getAddress();
         String city = commonService.getCityString(address);
-
-        // 시즌 추출
         String season = commonService.getSeason();
 
         // 가게명과 주소로 store를 찾기
         StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, city, address);
         List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
 
-        if (stores.isEmpty()) { // 가게가 존재하지 않을 경우: 가게 생성
-            /* 가게 이미지를 넣는 로직 */
+        if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
+            /* 가게 정보로 이미지 크롤링 */
+            // 가게 생성
             RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, null);
             try {
                 storeService.createStore(requestStoreDto);
@@ -139,14 +138,12 @@ public class ReviewService {
             }
         }
 
-        //리뷰가 적힐 Store targeting
         List<Store> targetStores = storeRepository.findStoreListByCondition(storeSearchCondition);
         Store targetStore = targetStores.get(0);
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
         Integer ratingPoint = reviewContent.getRatingPoint();
 
-        //리뷰 객체 생성 및 데이터베이스에 저장
         Review review = new Review(ratingPoint, content, season, img, member, targetStore);
         reviewRepository.save(review);
 
@@ -158,8 +155,7 @@ public class ReviewService {
     public void deleteReview(long reviewId) {
         try {
             Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_REVIEW));
-            review.softDeleted();
-            reviewRepository.save(review); // 변경된 상태를 데이터베이스에 반영
+            reviewRepository.delete(review);
             System.out.println("삭제 완료");
         } catch (IllegalArgumentException e) {
             throw new LORException(ErrorCode.FAIL_TO_DELETE_REVIEW);
