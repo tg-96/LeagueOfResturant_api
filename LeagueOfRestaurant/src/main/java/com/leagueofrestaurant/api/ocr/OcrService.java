@@ -56,7 +56,7 @@ public class OcrService {
     }
 
     // 이미지 형식 추출
-    private String getImageFormat(MultipartFile image) {
+    public String getImageFormat(MultipartFile image) {
         String originalFilename = image.getOriginalFilename();
         if (originalFilename != null && originalFilename.contains(".")) {
             return originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();

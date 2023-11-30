@@ -1,11 +1,13 @@
 package com.leagueofrestaurant.web.review.controller;
 
+import com.leagueofrestaurant.web.common.ImageService;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.dto.ReviewRequest;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
+    private final ImageService imageService;
 
     //모든 리뷰 조회
     @GetMapping("/")
@@ -27,9 +30,30 @@ public class ReviewController {
 
     //리뷰 작성
     @PostMapping("/")
-    public ResponseEntity<String> createReview(@RequestBody ReviewRequest reviewRequest) {
-        reviewService.createReview(reviewRequest.getMemberId(), reviewRequest.getReviewContent(), reviewRequest.getReceiptInfo());
-        return ResponseEntity.ok("Review created successfully");
+    public ResponseEntity<String> createReview(@RequestParam("memberId") Long memberId,
+                                               @RequestParam("content") String content,
+                                               @RequestParam("ratingPoint") Integer ratingPoint,
+                                               @RequestParam(value = "image", required = false) MultipartFile image,
+                                               @RequestParam("storeName") String storeName,
+                                               @RequestParam("address") String address) throws IOException{
+        String imageFilePath = null;
+
+        try {
+            if (image != null && !image.isEmpty()) {
+                imageFilePath = imageService.saveImage(image);
+            }
+            ReviewContent reviewContent = new ReviewContent(content, ratingPoint, imageFilePath, null);
+            ReceiptInfo receiptInfo = new ReceiptInfo(storeName, address);
+
+            reviewService.createReview(memberId, reviewContent, receiptInfo);
+            return ResponseEntity.ok("Review created successfully");
+        } catch (Exception e) {
+            // 리뷰 생성 중 오류가 발생하면 이미지를 다시 삭제
+            if (imageFilePath != null) {
+                imageService.deleteImage(imageFilePath);
+            }
+            throw e;
+        }
     }
 
     //특정 리뷰 조회

@@ -11,5 +11,5 @@ import lombok.Setter;
 
 public class ReceiptInfo {
     private String storeName;
-    private String Address;
+    private String address;
 }
