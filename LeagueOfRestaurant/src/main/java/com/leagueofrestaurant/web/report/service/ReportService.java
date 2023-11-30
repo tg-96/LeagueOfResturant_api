@@ -29,8 +29,10 @@ public class ReportService {
     //신고 생성
     @Transactional
     public void createReport(ReportDto reportDto) {
-        Optional<Review> reviewOptional = reviewRepository.findById(reportDto.getReview_id());
-        Optional<Member> memberOptional = memberRepository.findById(reportDto.getMember_id());
+        System.out.println(reportDto.getMemberId());
+        Optional<Review> reviewOptional = reviewRepository.findById(reportDto.getReviewId());
+        Optional<Member> memberOptional = memberRepository.findById(reportDto.getMemberId());
+
         if(!(reviewOptional.isPresent())){
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -45,22 +47,24 @@ public class ReportService {
         }
     }
 
+    //처리상태 업데이트
+
     //모든 신고내역 조회
     public List<ReportDto> getAllReports() {
         List<Report> reports = reportRepository.findAll();
 
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getStatus(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
                 .collect(Collectors.toList());
     }
 
     // 특정 신고내역 조회
-    public ReportDto getReport(Long reportId) {
+    public ReportDto getReportById(Long reportId) {
         Optional<Report> optionalReport = reportRepository.findById(reportId);
 
         if (optionalReport.isPresent()) {
             Report report = optionalReport.get();
-            return new ReportDto(report.getType(), report.getContent(), report.getStatus(), report.getMember().getId(), report.getReview().getId());
+            return new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REPORT);
         }
@@ -71,7 +75,7 @@ public class ReportService {
         List<Report> reports = reportRepository.findAllByMemberId(memberId);
 
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getStatus(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +84,7 @@ public class ReportService {
         List<Report> reports = reportRepository.findAllByStatus(status);
 
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getStatus(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
                 .collect(Collectors.toList());
     }
 

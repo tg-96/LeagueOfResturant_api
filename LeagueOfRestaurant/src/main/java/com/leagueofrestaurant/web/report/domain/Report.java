@@ -10,12 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-/**
- * 리뷰에 답글 다는 기능 향후 추가하면 좋을 듯
- *
- * 신고 type 추가 해야함.
- */
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
