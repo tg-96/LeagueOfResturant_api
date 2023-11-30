@@ -34,7 +34,6 @@ public class WishRepositoryTest {
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
-<<<<<<< HEAD
     private MemberRepository memberRepository;
 
     @Test
@@ -54,8 +53,6 @@ public class WishRepositoryTest {
         Wish wishState = wishRepository.getWishState(memberEntity.getId(), storeEntity.getId());
         //assertThat(wishState.getMember()).isEqualTo(memberEntity);
     }
-=======
-    MemberRepository memberRepository;
 
 //    Address address = new Address("seoul","3cmd","342");
 //    Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
@@ -77,7 +74,6 @@ public class WishRepositoryTest {
 //        System.out.println(myWishList.get(0));
 //        assertThat(myWishList.get(0)).isEqualTo(wish1);
 //    }
->>>>>>> feat/review-svc
 
     @Test
     @DisplayName("멤버가 찜한 모든 스토어 리스트")
