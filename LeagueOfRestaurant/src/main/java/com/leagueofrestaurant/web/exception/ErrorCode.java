@@ -16,7 +16,9 @@ public enum ErrorCode {
     NOT_EXIST_MEMBER("존재하지 않는 회원"),
     RECEIPT_ERROR("영수증 인식 오류"),
     WRONG_MEMBER_OR_STORE_ID("member id 혹은 store id가 잘못 되었습니다."),
-    FAIL_TO_CREATE_STORE("가게 생성 오류");
+    FAIL_TO_CREATE_STORE("가게 생성 오류"),
+    DUPLICATE_REVIEW("이미 해당 가게에 리뷰를 작성함"),
+    NOT_SUPPORT_AREA("지원하지 않는 지역");
 
     private final String message;
     ErrorCode(String message) {

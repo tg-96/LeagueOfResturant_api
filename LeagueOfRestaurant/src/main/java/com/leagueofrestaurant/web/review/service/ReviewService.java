@@ -44,7 +44,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public class ReviewService {
 
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            return new ReviewContent(review.getContent(), review.getImg(), review.getSeason());
+            return new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -92,10 +92,17 @@ public class ReviewService {
         else{ //성공
             String storeName = receiptData.get(1);
             String storeAddress = receiptData.get(2);
-            return new ReceiptInfo(storeName, storeAddress);
+            String city = commonService.getCityString(storeAddress); // 서울,인천,경기도가 아닌 경우 예외 처리
+            if(commonService.isBoundary(city)){
+                return new ReceiptInfo(storeName, storeAddress);
+            }
+            else{ //서비스 지역이 아님
+                throw new LORException(ErrorCode.NOT_SUPPORT_AREA);
+            }
         }
     }
 
+    //리뷰 생성
     @Transactional
     public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
         // member가 존재하지 않는 경우 예외 처리
@@ -106,11 +113,12 @@ public class ReviewService {
         String storeName = receiptInfo.getStoreName();
         String address = receiptInfo.getAddress();
 
+        // 시즌 추출
+        String season = commonService.getSeason();
+
         // 가게명과 주소로 store를 찾기
         StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, address);
         List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
-
-        ResponseStoreDto targetStore;
 
         if (stores.isEmpty()) { // 존재하지 않을 경우 : 가게 생성
             RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, null, null);
@@ -120,18 +128,24 @@ public class ReviewService {
                 throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
             }
         }
+        else { // 존재하는 경우 : 시즌 내 동일 가게에 리뷰 이력 있는지 확인
+            List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getId(), season);
+            if(!(seasonReviews.isEmpty())){
+                throw new LORException(ErrorCode.DUPLICATE_REVIEW);
+            }
+        }
 
-        stores = storeService.getStoreListByCondition(storeSearchCondition);
-        targetStore = stores.get(0);
-
-        // 여기서 리뷰 객체 생성 및 데이터베이스에 저장하는 부분을 진행
-        String season = commonService.getSeason();
+        List<Store> targetStores = storeRepository.findStoreListByCondition(storeSearchCondition);
+        Store targetStore = targetStores.get(0);
         String content = reviewContent.getContent();
         String img = reviewContent.getImg();
         Integer ratingPoint = reviewContent.getRatingPoint();
 
+        //리뷰 객체 생성 및 데이터베이스에 저장
         Review review = new Review(ratingPoint, content, season, img, member, targetStore);
         reviewRepository.save(review);
+
+        //targetStore의 평균 별점을 업데이트.. 그리고 실시간 점수(score 계산)
     }
 
     // 리뷰 삭제

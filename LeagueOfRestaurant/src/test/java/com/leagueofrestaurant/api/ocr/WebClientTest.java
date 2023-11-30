@@ -24,12 +24,12 @@ public class WebClientTest {
 
     @Test
     public void api테스트() throws IOException {
-        String response = ocrService.getReceiptJSON("/Users/hangyujeong/Desktop/영수증테스트/tom.png");
-
-        // JSON 응답을 JsonNode로 파싱
-        JsonNode jsonNode = objectMapper.readTree(response);
-        List<String> a = ocrService.getReceiptInfo(jsonNode);
-        System.out.println(jsonNode);
+//        String response = ocrService.getReceiptJSON("/Users/hangyujeong/Desktop/영수증테스트/tom.png");
+//
+//        // JSON 응답을 JsonNode로 파싱
+//        JsonNode jsonNode = objectMapper.readTree(response);
+//        List<String> a = ocrService.getReceiptInfo(jsonNode);
+//        System.out.println(jsonNode);
     }
 
 

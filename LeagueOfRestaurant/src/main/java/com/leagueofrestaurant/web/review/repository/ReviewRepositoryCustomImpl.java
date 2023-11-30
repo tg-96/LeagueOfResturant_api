@@ -30,4 +30,15 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Review> findByMemberIdAndStoreId(Long memberId, Long storeId, String season) {
+        return queryFactory
+                .selectFrom(review)
+                .where(
+                        review.member.id.eq(memberId)
+                                .and(review.store.id.eq(storeId))
+                                .and(review.season.eq(season))
+                )
+                .fetch();
+    }
 }
