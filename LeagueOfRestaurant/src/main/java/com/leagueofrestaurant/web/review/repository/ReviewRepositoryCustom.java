@@ -4,6 +4,7 @@ import com.leagueofrestaurant.web.review.domain.Review;
 import java.util.List;
 
 public interface ReviewRepositoryCustom {
-    List<Review> findAllByMemberId(Long member_Id);
-    List<Review> findAllByStoreId(Long store_Id);
+    List<Review> findAllByMemberId(Long memberId);
+    List<Review> findAllByStoreId(Long storeId);
+    Long countByStoreId(Long storeId);
 }

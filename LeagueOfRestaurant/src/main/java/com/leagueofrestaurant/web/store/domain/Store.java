@@ -30,12 +30,15 @@ public class Store {
     private String address;
     private String city;
     private String img;
-
+    private float rating; // 별점 평균
+    private float score; // 총 스코어 별점점수*0.7(700점 만점) + 리뷰수*0.3(300점 만점)
     public Store(String name, String address, String city, String img) {
         this.name = name;
         this.address = address;
         this.city = city;
         this.img = img;
+        this.rating = 0;
+        this.score = 0;
     }
 
     public void change(RequestStoreDto storeDto){
@@ -52,5 +55,12 @@ public class Store {
             this.city = storeDto.getCity();
         }
     }
+
+    public void changeRating(float rating){
+        this.rating = rating;
+    }
+
+
+
 }
 

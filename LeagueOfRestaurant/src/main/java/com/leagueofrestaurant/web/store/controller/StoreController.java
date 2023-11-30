@@ -31,4 +31,6 @@ public class StoreController {
         return storeService.getStoreListByCondition(condition);
     }
 
+
+
 }

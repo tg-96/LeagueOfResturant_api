@@ -10,6 +10,8 @@ import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import org.apache.tomcat.jni.Address;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -86,5 +88,12 @@ public class ReviewRepositoryTest {
 
 
         // 테스트 검증
+    }
+
+    @Test
+    @DisplayName("가게의 리뷰수 카운트")
+    public void countReview(){
+        Long count = reviewRepository.countByStoreId(2L);
+        assertThat(count).isEqualTo(1);
     }
 }

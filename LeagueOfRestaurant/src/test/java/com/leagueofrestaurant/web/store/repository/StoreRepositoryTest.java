@@ -34,15 +34,15 @@ class StoreRepositoryTest {
         storeList.add(store4);
         storeRepository.saveAllAndFlush(storeList);
         //이름 검색
-        StoreSearchCondition cond1 = new StoreSearchCondition("a가게", null);
+        StoreSearchCondition cond1 = new StoreSearchCondition("a가게", null,"aaa");
         List<Store> list1 = storeRepository.findStoreListByCondition(cond1);
         Assertions.assertThat(list1.size()).isEqualTo(2);
         //주소,이름 검색
-        StoreSearchCondition cond2 = new StoreSearchCondition("a가게", "수정구");
+        StoreSearchCondition cond2 = new StoreSearchCondition("a가게", "수정구","aaa");
         List<Store> list2 = storeRepository.findStoreListByCondition(cond2);
         Assertions.assertThat(list2.size()).isEqualTo(1);
         //주소 검색
-        StoreSearchCondition cond3 = new StoreSearchCondition(null, "수정구");
+        StoreSearchCondition cond3 = new StoreSearchCondition(null, "수정구","aaa");
         List<Store> list3 = storeRepository.findStoreListByCondition(cond3);
         Assertions.assertThat(list3.size()).isEqualTo(2);
 
