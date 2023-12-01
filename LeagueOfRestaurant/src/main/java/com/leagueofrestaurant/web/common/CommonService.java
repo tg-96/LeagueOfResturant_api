@@ -23,8 +23,11 @@ public class CommonService {
             season = "Summer";
         } else if (month.getValue() >= 9 && month.getValue() <= 11) {
             season = "Fall";
-        } else { // 1,2월의 경우
-            year--;
+        }
+        else { // 12,1,2월의 경우
+            if(month.getValue() == 1 || month.getValue() == 2){
+                year--;
+            }
             season = "Winter";
         }
         return year + "-" + season;
