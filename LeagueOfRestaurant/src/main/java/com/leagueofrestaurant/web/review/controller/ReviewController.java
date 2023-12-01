@@ -1,17 +1,15 @@
 package com.leagueofrestaurant.web.review.controller;
 
 import com.leagueofrestaurant.web.common.ImageService;
-import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
-import com.leagueofrestaurant.web.review.dto.ReviewRequest;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class ReviewController {
                                                @RequestParam("ratingPoint") Integer ratingPoint,
                                                @RequestParam(value = "image", required = false) MultipartFile image,
                                                @RequestParam("storeName") String storeName,
-                                               @RequestParam("address") String address) throws IOException{
+                                               @RequestParam("address") String address) throws IOException {
         String imageFilePath = null;
 
         try {
@@ -70,8 +68,8 @@ public class ReviewController {
 
     //특정 가게의 리뷰 조회
     @GetMapping("/store/{storeId}")
-    public List<ReviewContent> getReviewsByStoreId(@PathVariable Long storeId) {
-        return reviewService.getReviewsByStoreId(storeId);
+    public List<ReviewContent> getReviewsByStoreId(@PathVariable Long storeId, Pageable pageable) {
+        return reviewService.getReviewsByStoreId(storeId, pageable);
     }
 
     //영수증 인증

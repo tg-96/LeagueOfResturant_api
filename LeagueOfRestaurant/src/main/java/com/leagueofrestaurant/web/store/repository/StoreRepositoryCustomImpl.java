@@ -45,6 +45,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .select(store.count())
                 .from(store)
                 .fetchOne();
+
         return new PageImpl<>(content, pageable, count);
     }
 

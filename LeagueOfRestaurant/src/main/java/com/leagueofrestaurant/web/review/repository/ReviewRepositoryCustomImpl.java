@@ -2,6 +2,8 @@ package com.leagueofrestaurant.web.review.repository;
 
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
@@ -26,16 +28,21 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public List<Review> findAllByStoreId(Long storeId, Pageable pageable) {
+    public Page<Review> findAllByStoreId(Long storeId, Pageable pageable) {
         List<Review> content = queryFactory
                 .selectFrom(review)
                 .where(review.store.id.eq(storeId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
         Long count = queryFactory
                 .select(review.count())
                 .from(review)
                 .where(review.store.id.eq(storeId))
                 .fetchOne();
+
+        return new PageImpl(content, pageable, count);
     }
 
     @Override
