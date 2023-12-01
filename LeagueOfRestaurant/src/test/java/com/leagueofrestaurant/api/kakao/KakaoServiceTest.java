@@ -23,8 +23,9 @@ public class KakaoServiceTest {
     @Test
     public void 테스트() throws JsonProcessingException {
         String a = kakaoService.fetchKakaoSearch("일미닭갈비파전");
-        String b = kakaoService.selectStore(a);
-        System.out.println(b);
+        CrawlingStoreDto b = kakaoService.selectStore(a, "수원시 팔달구");
+        System.out.println("url: "+b.getStoreUrl());
+        System.out.println("category: "+b.getCategory());
     }
 
 }

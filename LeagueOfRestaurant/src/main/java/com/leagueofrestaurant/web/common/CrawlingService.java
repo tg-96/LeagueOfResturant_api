@@ -20,9 +20,7 @@ public class CrawlingService {
         while (matcher.find()) {
             sb.append(matcher.group());
         }
-        System.out.println(sb.toString());
         String printPageUrl = "https://place.map.kakao.com/placePrint.daum?confirmid=" + sb.toString();
-        System.out.println(printPageUrl);
 
         Document document = Jsoup.connect(printPageUrl).get();
         Elements images = document.select("img");
@@ -31,7 +29,6 @@ public class CrawlingService {
         if (!images.isEmpty()) {
             Element firstImage = images.first();
             imageUrl = "https:" + firstImage.attr("src");
-            System.out.println("첫 번째 이미지 링크: " + imageUrl);
         } else {
             System.out.println("이미지를 찾을 수 없습니다.");
         }
