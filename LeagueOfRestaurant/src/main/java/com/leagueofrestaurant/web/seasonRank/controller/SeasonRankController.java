@@ -26,6 +26,10 @@ public class SeasonRankController {
     public List<SeasonRankDto> getSeasonRankByStoreId(@PathVariable("storeId")Long storeId){
         return seasonRankService.getSeasonRankByStoreId(storeId);
     }
+    @GetMapping("/seasonRank/seasonName")
+    public List<String> getSeasonName(){
+        return seasonRankService.getSeasonName();
+    }
 
     @PutMapping("/seasonRank/end")
     public ResponseEntity<Void> endSeason(){

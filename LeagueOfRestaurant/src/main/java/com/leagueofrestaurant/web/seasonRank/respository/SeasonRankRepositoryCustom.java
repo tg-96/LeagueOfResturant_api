@@ -9,4 +9,5 @@ public interface SeasonRankRepositoryCustom {
     List<SeasonRank> findSeasonRankByStoreId(Long storeId);
     //city의 특정 시즌 랭크 조회
     List<SeasonRank> findSeasonRankByCity(String Season,String city);
+    List<String> getSeasonName();
 }

@@ -62,7 +62,7 @@ public class StoreService {
     public void createStore(RequestStoreDto storeDto) {
         Store store = new Store(
                 storeDto.getName(),
-                storeDto.getAdress(),
+                storeDto.getAddress(),
                 storeDto.getCity(),
                 storeDto.getImg()
         );

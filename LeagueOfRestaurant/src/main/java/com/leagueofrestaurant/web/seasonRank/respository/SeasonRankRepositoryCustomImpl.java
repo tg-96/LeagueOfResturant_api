@@ -43,5 +43,16 @@ public class SeasonRankRepositoryCustomImpl implements SeasonRankRepositoryCusto
                 .fetch();
     }
 
+    /**
+     *
+     * @return 명예의 전당에 기록된 가장 최근 시즌을 조회
+     */
+    @Override
+    public List<String> getSeasonName() {
+        return query.select(seasonRank.season)
+                .from(seasonRank)
+                .distinct()
+                .fetch();
+    }
 
 }

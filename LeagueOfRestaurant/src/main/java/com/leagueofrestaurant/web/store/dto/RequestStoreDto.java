@@ -5,13 +5,13 @@ import lombok.Getter;
 @Getter
 public class RequestStoreDto {
     private String name;
-    private String adress;
+    private String address;
     private String city;
     private String img;
 
-    public RequestStoreDto(String name, String adress, String city, String img) {
+    public RequestStoreDto(String name, String address, String city, String img) {
         this.name = name;
-        this.adress = adress;
+        this.address = address;
         this.city = city;
         this.img = img;
     }

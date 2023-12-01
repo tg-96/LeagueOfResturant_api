@@ -65,6 +65,9 @@ public class SeasonRankService {
         List<SeasonRank> seasonRank = seasonRankRepository.findSeasonRankByCity(season, city);
         return getSeasonRanks(seasonRank);
     }
+    public List<String> getSeasonName(){
+        return seasonRankRepository.getSeasonName();
+    }
 
     private static List<SeasonRankDto> getSeasonRanks(List<SeasonRank> seasonRank) {
         List<SeasonRankDto> seasonRankDtoList = seasonRank.stream()

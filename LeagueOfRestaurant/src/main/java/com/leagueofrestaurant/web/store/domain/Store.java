@@ -1,7 +1,6 @@
 package com.leagueofrestaurant.web.store.domain;
 
 import com.leagueofrestaurant.web.store.dto.RequestStoreDto;
-import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,8 +44,8 @@ public class Store {
         if(storeDto.getName() != null){
             this.name = storeDto.getName();
         }
-        if(storeDto.getAdress() != null){
-            this.address = storeDto.getAdress();
+        if(storeDto.getAddress() != null){
+            this.address = storeDto.getAddress();
         }
         if(storeDto.getImg() != null){
             this.img = storeDto.getImg();
