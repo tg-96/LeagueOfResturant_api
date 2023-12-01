@@ -8,11 +8,13 @@ import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
+import net.bytebuddy.build.ToStringPlugin;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -86,6 +88,11 @@ class ReviewRepositoryTest {
     public void countReview() {
         Long count = reviewRepository.countByStoreIdAndSeason(2L,commonService.getSeason());
         assertThat(count).isEqualTo(1);
+    }
+    @org.junit.jupiter.api.Test
+    @Rollback(value = false)
+    public void delete(){
+        reviewRepository.deleteAll();
     }
 
 }

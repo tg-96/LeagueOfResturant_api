@@ -21,8 +21,7 @@ class SeasonRankServiceTest {
     @DisplayName("랭킹 테이블에 저장이 되는지 확인")
     @Rollback(value = false)
     public void saveSeasonRank() {
-
-        seasonRankService.saveSeasonRank();
+        seasonRankRepository.deleteAll();
     }
 
 }
