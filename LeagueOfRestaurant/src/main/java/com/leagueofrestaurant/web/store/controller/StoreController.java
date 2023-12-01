@@ -4,10 +4,8 @@ import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +23,6 @@ public class StoreController {
     public List<ResponseStoreDto> getAllStores(){
         return storeService.getAllStores();
     }
-
     @GetMapping("/stores/condition")
     public List<ResponseStoreDto> getStoreListByCondition(@ModelAttribute StoreSearchCondition condition){
         return storeService.getStoreListByCondition(condition);
@@ -33,5 +30,10 @@ public class StoreController {
     @GetMapping("/stores/rank/{city}")
     public List<ResponseStoreDto> getStoreRankByCity(@PathVariable String city){
         return storeService.getStoreRankByCity(city);
+    }
+    @PutMapping("/stores/initRank")
+    public ResponseEntity<Void> initRank(){
+        storeService.initRank();
+        return ResponseEntity.ok().build();
     }
 }

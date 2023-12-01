@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.repository;
 
+import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.member.domain.Gender;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.domain.MemberType;
@@ -31,6 +32,8 @@ class ReviewRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    CommonService commonService;
     @Test
     public void 전체리뷰_조회() {
         Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
@@ -81,7 +84,7 @@ class ReviewRepositoryTest {
     @Test
     @DisplayName("가게의 리뷰수 카운트")
     public void countReview() {
-        Long count = reviewRepository.countByStoreId(2L);
+        Long count = reviewRepository.countByStoreIdAndSeason(2L,commonService.getSeason());
         assertThat(count).isEqualTo(1);
     }
 

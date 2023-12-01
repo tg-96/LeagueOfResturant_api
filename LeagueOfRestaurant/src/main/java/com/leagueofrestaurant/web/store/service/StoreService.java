@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.store.service;
 
+import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class StoreService {
     private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
+    private final CommonService commonService;
 
     public ResponseStoreDto getStoreById(Long storeId) {
         Store store = storeRepository.findById(storeId).get();
@@ -33,7 +36,8 @@ public class StoreService {
         List<Store> storeList = storeRepository.findAll();
         return getStoreDtoList(storeList);
     }
-    public List<ResponseStoreDto> getStoreRankByCity(String city){
+
+    public List<ResponseStoreDto> getStoreRankByCity(String city) {
         List<Store> storeList = storeRepository.findRankListByCity(city);
         return getStoreDtoList(storeList);
     }
@@ -61,14 +65,28 @@ public class StoreService {
     }
 
     /**
+     * 시즌이 끝나면, store의 rating과 score를 초기화 한다.
+     */
+    @Transactional
+    public void initRank() {
+        List<Store> storeList = storeRepository.findAll();
+        Iterator<Store> iter = storeList.iterator();
+        while (iter.hasNext()) {
+            Store store = iter.next();
+            store.changeScore(0);
+            store.changeRating(0);
+        }
+    }
+
+    /**
      * 리뷰 추가 될때 스토어의 평균 별점 계산후 수정
      * 리뷰를 추가하면 리뷰가 먼저 추가된 값이 count로 들어옴.
      */
     @Transactional
     public void calculateRating(Store store, float rating) {
-        Long count = reviewRepository.countByStoreId(store.getId());
+        Long count = reviewRepository.countByStoreIdAndSeason(store.getId(), commonService.getSeason());
         //(가게 평균별점*리뷰수 +새로운 리뷰별점)/(리뷰수+1) = 새로운 평균별점
-        float newRating = (store.getRating() * (count-1) + rating) / count;
+        float newRating = (store.getRating() * (count - 1) + rating) / count;
         store.changeRating(newRating);
     }
 
@@ -84,7 +102,7 @@ public class StoreService {
         float ratingScore = 700 * rating / 5;
 
         //리뷰수 점수 : 1개당 2점,최대 300점
-        Long reviewCount = reviewRepository.countByStoreId(store.getId());
+        Long reviewCount = reviewRepository.countByStoreIdAndSeason(store.getId(), commonService.getSeason());
         float reviewScore = reviewCount * 2;
         if (reviewScore >= 300) reviewScore = 300;
         //총 점수
