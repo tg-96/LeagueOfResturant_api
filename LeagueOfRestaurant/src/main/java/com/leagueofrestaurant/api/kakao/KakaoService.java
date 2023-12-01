@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 @Service
 public class KakaoService {
@@ -19,6 +21,7 @@ public class KakaoService {
     private String kakaoSearchUrl;
 
     public String fetchKakaoSearch(String storeName) {
+        int size = 30;
         WebClient webClient = WebClient.builder()
                 .baseUrl(kakaoSearchUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -35,14 +38,33 @@ public class KakaoService {
                 .block();
     }
 
-    public String selectStore(String response) throws JsonProcessingException {
+    public CrawlingStoreDto selectStore(String response, String receiptAddress) throws JsonProcessingException {
         //좌표값 기준으로 개선 예정, 일단은 첫 번째 인덱스를 추출
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(response);
+        JsonNode storeList = jsonNode.get("documents");
+        JsonNode correctStore = storeList.get(0);
+        double max_similarity = 0.0;
+        for (int i=0; i<storeList.size(); i++) {
+            JsonNode store = storeList.get(i);
+            String address = store.get("address_name").asText();
+            String roadAddress = store.get("road_address_name").asText();
+            double similarity_1 = findSimilarity(receiptAddress, address);
+            double similarity_2 = findSimilarity(receiptAddress, roadAddress);
+            if(similarity_1 > max_similarity || similarity_2 > max_similarity) {
+                max_similarity = Math.max(similarity_1, similarity_2);
+                correctStore = store;
+            }
+        }
+        CrawlingStoreDto crawlingStoreDto = new CrawlingStoreDto(correctStore.get("place_url").asText(), correctStore.get("category_name").asText());
+        return crawlingStoreDto;
+    }
 
-        JsonNode firstPlace = jsonNode.get("documents").get(0);
-
-        String placeUrl = firstPlace.get("place_url").asText();
-        return  placeUrl;
+    public static double findSimilarity(String x, String y) {
+        double maxLength = Double.max(x.length(), y.length());
+        if (maxLength > 0) {
+            return (maxLength - StringUtils.getLevenshteinDistance(x, y)) / maxLength;
+        }
+        return 1.0;
     }
 }

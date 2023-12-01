@@ -2,6 +2,7 @@ package com.leagueofrestaurant.web.review.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leagueofrestaurant.api.kakao.CrawlingStoreDto;
 import com.leagueofrestaurant.api.kakao.KakaoService;
 import com.leagueofrestaurant.api.ocr.OcrService;
 import com.leagueofrestaurant.web.common.CommonService;
@@ -130,8 +131,8 @@ public class ReviewService {
 
         if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
             /* 가게 정보로 이미지 크롤링 */
-            String storePageUrl = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName));
-            String storeImageUrl = crawlingService.crawlStoreImageUrl(storePageUrl);
+            CrawlingStoreDto crawlingStoreDto = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address);
+            String storeImageUrl = crawlingService.crawlStoreImageUrl(crawlingStoreDto.getStoreUrl());
             // 가게 생성
             RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, storeImageUrl);
             try {
