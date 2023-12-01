@@ -80,15 +80,18 @@ public class StoreService {
     @Scheduled(cron = "3 0 0 L * ?")
     public void initRank() {
         LocalDate today = LocalDate.now();
-        if(today.isEqual(LocalDate.of(today.getYear(),2,28))||
-                today.isEqual(LocalDate.of(today.getYear(),5,31))||
-        )
-        List<Store> storeList = storeRepository.findAll();
-        Iterator<Store> iter = storeList.iterator();
-        while (iter.hasNext()) {
-            Store store = iter.next();
-            store.changeScore(0);
-            store.changeRating(0);
+        if (today.isEqual(LocalDate.of(today.getYear(), 2, 28)) ||
+                today.isEqual(LocalDate.of(today.getYear(), 5, 31)) ||
+                today.isEqual(LocalDate.of(today.getYear(), 8, 31)) ||
+                today.isEqual(LocalDate.of(today.getYear(), 11, 30))) {
+
+            List<Store> storeList = storeRepository.findAll();
+            Iterator<Store> iter = storeList.iterator();
+            while (iter.hasNext()) {
+                Store store = iter.next();
+                store.changeScore(0);
+                store.changeRating(0);
+            }
         }
     }
 
