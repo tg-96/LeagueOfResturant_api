@@ -37,6 +37,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Store> findStoreByCity(String city) {
+        return query.selectFrom(store)
+                .where(eqCity(city))
+                .fetch();
+    }
+
     private BooleanExpression eqName(String nameCond) {
         return hasText(nameCond) ? store.name.containsIgnoreCase(nameCond) : null;
     }

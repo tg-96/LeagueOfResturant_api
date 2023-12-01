@@ -9,4 +9,6 @@ public interface StoreRepositoryCustom {
     public List<Store> findStoreListByCondition(StoreSearchCondition condition);
     public List<Store> findRankListByCity(String city);
 
+    public List<Store> findStoreByCity(String city);
+
 }

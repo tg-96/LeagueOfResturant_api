@@ -38,6 +38,11 @@ public class StoreService {
         return getStoreDtoList(storeList);
     }
 
+    public List<ResponseStoreDto> getStoreListByCity(String city){
+        List<Store> storeList = storeRepository.findStoreByCity(city);
+        return getStoreDtoList(storeList);
+    }
+
     public List<ResponseStoreDto> getStoreListByCondition(StoreSearchCondition condition) {
         List<Store> storeList = storeRepository.findStoreListByCondition(condition);
         return getStoreDtoList(storeList);

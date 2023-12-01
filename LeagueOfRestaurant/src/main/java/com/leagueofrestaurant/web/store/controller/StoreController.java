@@ -34,4 +34,9 @@ public class StoreController {
     public List<ResponseStoreDto> getStoreRankByCity(@PathVariable String city){
         return storeService.getStoreRankByCity(city);
     }
+
+    @GetMapping("/stores/map/{city}")
+    public List<ResponseStoreDto> getStoreListByCity(@PathVariable String city) {
+        return storeService.getStoreListByCity(city);
+    }
 }
