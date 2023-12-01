@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@Import(WebConfig.class)
+//@Import(WebConfig.class)
 public class LeagueOfRestaurantApplication {
 
     public static void main(String[] args) {
