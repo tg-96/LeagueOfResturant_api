@@ -20,7 +20,8 @@ public enum ErrorCode {
     RECEIPT_ERROR("영수증 인식 오류"),
     FAIL_TO_CREATE_STORE("가게 생성 오류"),
     DUPLICATE_REVIEW("이미 해당 가게에 리뷰를 작성함"),
-    NOT_SUPPORT_AREA("지원하지 않는 지역");
+    NOT_SUPPORT_AREA("지원하지 않는 지역"),
+    NO_EXIST_PRE_RANKING("이전 시즌 랭킹에 해당 가게가 없습니다.");
 
     private final String message;
     ErrorCode(String message) {

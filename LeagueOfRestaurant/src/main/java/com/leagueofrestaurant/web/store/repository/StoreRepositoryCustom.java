@@ -8,6 +8,8 @@ import java.util.List;
 public interface StoreRepositoryCustom {
     public List<Store> findStoreListByCondition(StoreSearchCondition condition);
     public List<Store> findRankListByCity(String city);
+    public List<Store> findTopSCore10ByCity(String city);
+    public List<String> findAllCity();
 
     public List<Store> findStoreByCity(String city);
 

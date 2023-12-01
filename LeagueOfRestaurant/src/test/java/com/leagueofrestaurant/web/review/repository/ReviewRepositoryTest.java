@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.repository;
 
+import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.member.domain.Gender;
 import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.domain.MemberType;
@@ -7,11 +8,13 @@ import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
+import net.bytebuddy.build.ToStringPlugin;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -31,6 +34,8 @@ class ReviewRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    CommonService commonService;
     @Test
     public void 전체리뷰_조회() {
         Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
@@ -81,8 +86,13 @@ class ReviewRepositoryTest {
     @Test
     @DisplayName("가게의 리뷰수 카운트")
     public void countReview() {
-        Long count = reviewRepository.countByStoreId(2L);
+        Long count = reviewRepository.countByStoreIdAndSeason(2L,commonService.getSeason());
         assertThat(count).isEqualTo(1);
+    }
+    @org.junit.jupiter.api.Test
+    @Rollback(value = false)
+    public void delete(){
+        reviewRepository.deleteAll();
     }
 
 }

@@ -44,11 +44,11 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .fetch();
     }
 
-    public Long countByStoreId(Long storeId) {
+    public Long countByStoreIdAndSeason(Long storeId,String season) {
         return queryFactory
                 .select(review.count())
                 .from(review)
-                .where(review.store.id.eq(storeId))
+                .where(review.store.id.eq(storeId),review.season.eq(season))
                 .fetchOne();
     }
 
