@@ -2,8 +2,10 @@ package com.leagueofrestaurant.web.review.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leagueofrestaurant.api.kakao.KakaoService;
 import com.leagueofrestaurant.api.ocr.OcrService;
 import com.leagueofrestaurant.web.common.CommonService;
+import com.leagueofrestaurant.web.common.CrawlingService;
 import com.leagueofrestaurant.web.common.ImageService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
@@ -40,7 +42,8 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final StoreRepository storeRepository;
     private final CommonService commonService;
-    private final ImageService imageService;
+    private final KakaoService kakaoService;
+    private final CrawlingService crawlingService;
     private final StoreService storeService;
     private final OcrService ocrService;
     private final ObjectMapper objectMapper;
@@ -110,7 +113,7 @@ public class ReviewService {
 
     //리뷰 생성
     @Transactional
-    public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) {
+    public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) throws IOException {
         // member가 존재하지 않는 경우 예외 처리
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
@@ -127,8 +130,10 @@ public class ReviewService {
 
         if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
             /* 가게 정보로 이미지 크롤링 */
+            String storePageUrl = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName));
+            String storeImageUrl = crawlingService.crawlStoreImageUrl(storePageUrl);
             // 가게 생성
-            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, null);
+            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, storeImageUrl);
             try {
                 storeService.createStore(requestStoreDto);
                 TransactionAspectSupport.currentTransactionStatus().flush(); // 트랜잭션이 커밋될 때까지 대기

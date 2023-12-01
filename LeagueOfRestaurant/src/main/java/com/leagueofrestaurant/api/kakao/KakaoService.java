@@ -1,5 +1,8 @@
 package com.leagueofrestaurant.api.kakao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,5 +33,16 @@ public class KakaoService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+    }
+
+    public String selectStore(String response) throws JsonProcessingException {
+        //좌표값 기준으로 개선 예정, 일단은 첫 번째 인덱스를 추출
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        JsonNode firstPlace = jsonNode.get("documents").get(0);
+
+        String placeUrl = firstPlace.get("place_url").asText();
+        return  placeUrl;
     }
 }

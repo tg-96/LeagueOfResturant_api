@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.api.kakao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +21,10 @@ public class KakaoServiceTest {
     KakaoService kakaoService;
 
     @Test
-    public void 테스트() {
+    public void 테스트() throws JsonProcessingException {
         String a = kakaoService.fetchKakaoSearch("일미닭갈비파전");
-        System.out.println(a);
+        String b = kakaoService.selectStore(a);
+        System.out.println(b);
     }
 
 }
