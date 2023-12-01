@@ -12,10 +12,12 @@ import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,7 +77,12 @@ public class StoreService {
      * 시즌이 끝나면, store의 rating과 score를 초기화 한다.
      */
     @Transactional
+    @Scheduled(cron = "3 0 0 L * ?")
     public void initRank() {
+        LocalDate today = LocalDate.now();
+        if(today.isEqual(LocalDate.of(today.getYear(),2,28))||
+                today.isEqual(LocalDate.of(today.getYear(),5,31))||
+        )
         List<Store> storeList = storeRepository.findAll();
         Iterator<Store> iter = storeList.iterator();
         while (iter.hasNext()) {
