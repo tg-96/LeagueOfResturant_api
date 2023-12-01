@@ -2,6 +2,7 @@ package com.leagueofrestaurant.web.store.repository;
 
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 

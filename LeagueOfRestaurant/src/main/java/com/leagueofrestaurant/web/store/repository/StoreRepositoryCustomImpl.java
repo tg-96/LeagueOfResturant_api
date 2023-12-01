@@ -43,6 +43,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .where(eqCity(city))
                 .fetch();
     }
+
     public List<Store> findTopSCore10ByCity(String city) {
         return query.selectFrom(store)
                 .where(eqCity(city))
@@ -72,3 +73,5 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
 }
+
+
