@@ -1,34 +1,24 @@
 package com.leagueofrestaurant.config;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.filter.CorsFilter;
 
-@RequiredArgsConstructor
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("").allowedMethods("").allowedHeaders("").allowCredentials(false).maxAge(6000);
-    }
+public class WebConfig {
 
     @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilterRegistrationBean() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-        config.addAllowedOrigin("");
-        config.addAllowedHeader("");
-        config.addAllowedMethod("*");
-        config.setMaxAge(6000L);
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);  // json 서버 응답을 자바스크립트에서 처리할 수 있게 해줌
+        config.addAllowedOriginPattern("");      // 모든 ip에 응답을 허용
+        config.addAllowedMethod("");       // 모든 HTTP METHOD 에 허용
+        config.addAllowedHeader("*");      // 모든 HTTP HEADER 에 허용
         source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean<CorsFilter> filterBean = new FilterRegistrationBean<>(new CorsFilter(source));
-        filterBean.setOrder(0);
-        return filterBean;
+
+        return new CorsFilter(source);
     }
 }
