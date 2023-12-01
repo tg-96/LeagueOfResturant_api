@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class LoginController {
     private final MemberService memberService;
     @PostMapping("/login")

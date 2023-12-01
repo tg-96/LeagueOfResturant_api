@@ -22,10 +22,14 @@
 //
 //    @Test
 //    public void 테스트() throws JsonProcessingException {
-//        String a = kakaoService.fetchKakaoSearch("일미닭갈비파전");
+//        String a = kakaoService.fetchKakaoSearch("뜔ㅇㄸ레례ㄸㄹ");
 //        CrawlingStoreDto b = kakaoService.selectStore(a, "수원시 팔달구");
-//        System.out.println("url: "+b.getStoreUrl());
-//        System.out.println("category: "+b.getCategory());
+//
+//        if(b!=null){
+//            System.out.println("url: "+b.getStoreUrl());
+//            System.out.println("category: "+b.getCategory());
+//        } else System.out.println("null");
+//
 //    }
 //
 //}
