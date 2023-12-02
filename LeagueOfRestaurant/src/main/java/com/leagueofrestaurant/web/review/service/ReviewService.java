@@ -82,8 +82,8 @@ public class ReviewService {
     }
 
     // 특정 가게의 리뷰 조회
-    public List<ReviewContent> getReviewsByStoreId(Long storeId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByStoreId(storeId,pageable);
+    public List<ReviewContent> getReviewsByStoreId(String season, Long storeId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByStoreId(season, storeId,pageable);
 
         return reviews.getContent().stream()
                 .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))

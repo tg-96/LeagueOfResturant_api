@@ -74,8 +74,10 @@ public class ReviewController {
 
     //특정 가게의 리뷰 조회
     @GetMapping("/store/{storeId}")
-    public List<ReviewContent> getReviewsByStoreId(@PathVariable Long storeId, Pageable pageable) {
-        return reviewService.getReviewsByStoreId(storeId, pageable);
+    public List<ReviewContent> getReviewsByStoreId(
+            @PathVariable Long storeId, String season,
+            Pageable pageable) {
+        return reviewService.getReviewsByStoreId(season, storeId, pageable);
     }
 
     //영수증 인증
