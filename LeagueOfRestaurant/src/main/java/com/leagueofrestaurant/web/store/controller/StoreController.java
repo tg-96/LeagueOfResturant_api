@@ -17,8 +17,8 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/home")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("success");
+    public String test() {
+        return "success";
     }
 
     @GetMapping("/store/{id}")
