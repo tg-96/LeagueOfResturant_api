@@ -27,9 +27,9 @@ public class StoreController {
     }
 
     @GetMapping("/stores")
-    public List<ResponseStoreDto> getAllStores(HttpServletResponse response) {
+    public ResponseStoreDto getAllStores(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        return storeService.getAllStores();
+        return storeService.getStoreById(2L);
     }
 
     @GetMapping("/stores/condition")
