@@ -10,28 +10,31 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @RestController
 @RequiredArgsConstructor
 public class WishController {
     private final WishService wishService;
 
-    @PutMapping("/wish/change/{memberId}/{storeId}")
-    public ResponseEntity<Void> changeWishState(@PathVariable("memberId") Long memberId,
+    @PutMapping("/wish/change/{storeId}")
+    public ResponseEntity<Void> changeWishState(HttpSession session,
                                                 @PathVariable("storeId") Long storeId) {
-        wishService.changeWishState(memberId, storeId);
+        wishService.changeWishState((Long) session.getAttribute(LOGIN_SESSION_KEY), storeId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/wishes/{memberId}")
-    public List<ResponseStoreDto> getWishListByMemberId(@PathVariable("memberId") Long memberId) {
-        return wishService.getWishListByMemberId(memberId);
+    @GetMapping("/wishes")
+    public List<ResponseStoreDto> getWishListByMemberId(HttpSession session) {
+        return wishService.getWishListByMemberId((Long) session.getAttribute(LOGIN_SESSION_KEY));
     }
 
-    @GetMapping("/wish/state/{memberId}/{storeId}")
-    public boolean getWishState(@PathVariable Long memberId, @PathVariable Long storeId) {
-        Wish wish = wishService.getWish(memberId, storeId);
+    @GetMapping("/wish/state/{storeId}")
+    public boolean getWishState(HttpSession session, @PathVariable Long storeId) {
+        Wish wish = wishService.getWish((Long) session.getAttribute(LOGIN_SESSION_KEY), storeId);
         if (wish != null) return true;
         return false;
     }

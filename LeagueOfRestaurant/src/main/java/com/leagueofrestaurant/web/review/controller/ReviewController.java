@@ -65,9 +65,9 @@ public class ReviewController {
     }
 
     //특정 사용자의 리뷰 조회
-    @GetMapping("/member/{memberId}")
-    public List<ReviewContent> getReviewsByMemberId(@PathVariable Long memberId) {
-        return reviewService.getReviewsByMemberId(memberId);
+    @GetMapping("/member")
+    public List<ReviewContent> getReviewsByMember(HttpSession session) {
+        return reviewService.getReviewsByMemberId((Long)session.getAttribute(LOGIN_SESSION_KEY));
     }
 
     //특정 가게의 리뷰 조회
