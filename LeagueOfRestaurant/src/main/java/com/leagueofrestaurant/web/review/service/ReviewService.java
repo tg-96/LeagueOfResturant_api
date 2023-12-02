@@ -132,9 +132,11 @@ public class ReviewService {
         List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
 
         if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
-            /* 가게 정보로 이미지 크롤링 */
-            CrawlingStoreDto crawlingStoreDto = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address);
-            String storeImageUrl = crawlingService.crawlStoreImageUrl(crawlingStoreDto.getStoreUrl());
+            String storeImageUrl = null;
+            if(kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address) != null){
+                CrawlingStoreDto crawlingStoreDto = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address);
+                storeImageUrl = crawlingService.crawlStoreImageUrl(crawlingStoreDto.getStoreUrl());
+            }
             // 가게 생성
             RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, storeImageUrl);
             try {

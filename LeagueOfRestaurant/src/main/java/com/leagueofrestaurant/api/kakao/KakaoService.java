@@ -43,21 +43,24 @@ public class KakaoService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(response);
         JsonNode storeList = jsonNode.get("documents");
-        JsonNode correctStore = storeList.get(0);
-        double max_similarity = 0.0;
-        for (int i=0; i<storeList.size(); i++) {
-            JsonNode store = storeList.get(i);
-            String address = store.get("address_name").asText();
-            String roadAddress = store.get("road_address_name").asText();
-            double similarity_1 = findSimilarity(receiptAddress, address);
-            double similarity_2 = findSimilarity(receiptAddress, roadAddress);
-            if(similarity_1 > max_similarity || similarity_2 > max_similarity) {
-                max_similarity = Math.max(similarity_1, similarity_2);
-                correctStore = store;
+        if(storeList.get(0) != null){
+            JsonNode correctStore = storeList.get(0);
+            double max_similarity = 0.0;
+            for (int i=0; i<storeList.size(); i++) {
+                JsonNode store = storeList.get(i);
+                String address = store.get("address_name").asText();
+                String roadAddress = store.get("road_address_name").asText();
+                double similarity_1 = findSimilarity(receiptAddress, address);
+                double similarity_2 = findSimilarity(receiptAddress, roadAddress);
+                if(similarity_1 > max_similarity || similarity_2 > max_similarity) {
+                    max_similarity = Math.max(similarity_1, similarity_2);
+                    correctStore = store;
+                }
             }
+            CrawlingStoreDto crawlingStoreDto = new CrawlingStoreDto(correctStore.get("place_url").asText(), correctStore.get("category_name").asText());
+            return crawlingStoreDto;
         }
-        CrawlingStoreDto crawlingStoreDto = new CrawlingStoreDto(correctStore.get("place_url").asText(), correctStore.get("category_name").asText());
-        return crawlingStoreDto;
+        else return null;
     }
 
     public static double findSimilarity(String x, String y) {
