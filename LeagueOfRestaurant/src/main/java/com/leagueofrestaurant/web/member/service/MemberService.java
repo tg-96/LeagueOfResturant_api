@@ -44,11 +44,11 @@ public class MemberService {
     }
 
     /**
-     * @return 중복됐으면 true, 중복 아니면 false
+     * @return 중복아니면 true, 중복이면 LORException
      */
     public boolean phoneNumDuplicated(String phoneNumber) {
         Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(phoneNumber);
-        if (memberByPhoneNumber != null) {
+        if (memberByPhoneNumber == null) {
             return true;
         }
         throw new LORException(ErrorCode.PHONE_NUM_DUPLICATED);

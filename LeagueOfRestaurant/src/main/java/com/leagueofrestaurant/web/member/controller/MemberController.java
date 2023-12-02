@@ -1,20 +1,26 @@
 package com.leagueofrestaurant.web.member.controller;
 
+import com.leagueofrestaurant.web.exception.ErrorCode;
+import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.dto.MemberDto;
 import com.leagueofrestaurant.web.member.dto.MemberEditReq;
 import com.leagueofrestaurant.web.member.dto.MemberSearchCondition;
 import com.leagueofrestaurant.web.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class MemberController {
     private final MemberService memberService;
 
@@ -51,5 +57,17 @@ public class MemberController {
     @GetMapping("/members/auth")
     public ResponseEntity<Void> authentication(HttpSession session) {
         return memberService.authentication(session);
+    }
+
+    @GetMapping("/members/dupCheck/{phoneNumber}")
+    public ResponseEntity<Void> PhoneNumberDupCheck(
+            @PathVariable
+            @Pattern(regexp = "^010\\d{8}$", message = "010으로 시작하고, '-' 없이 입력해주세요.")
+            @Valid String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            throw new LORException(ErrorCode.BLANK_PHONE_NUMBER);
+        }
+        memberService.phoneNumDuplicated(phoneNumber);
+        return ResponseEntity.ok().build();
     }
 }

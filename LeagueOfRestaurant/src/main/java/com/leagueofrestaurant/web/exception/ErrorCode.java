@@ -21,7 +21,9 @@ public enum ErrorCode {
     FAIL_TO_CREATE_STORE("가게 생성 오류"),
     DUPLICATE_REVIEW("이미 해당 가게에 리뷰를 작성함"),
     NOT_SUPPORT_AREA("지원하지 않는 지역"),
-    NO_EXIST_PRE_RANKING("이전 시즌 랭킹에 해당 가게가 없습니다.");
+    NO_EXIST_PRE_RANKING("이전 시즌 랭킹에 해당 가게가 없습니다."),
+    BLANK_PHONE_NUMBER("핸드폰 번호를 입력해주세요."),
+    WRONG_FORMAT_PHONENUMBER("잘못된 형식의 전화번호 입니다.");
 
     private final String message;
     ErrorCode(String message) {
