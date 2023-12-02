@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class StoreController {
     private final StoreService storeService;
 
@@ -27,9 +28,9 @@ public class StoreController {
     }
 
     @GetMapping("/stores")
-    public ResponseStoreDto getAllStores(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        return storeService.getStoreById(2L);
+    public List<ResponseStoreDto> getAllStores(HttpServletResponse response) {
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+        return storeService.getAllStores();
     }
 
     @GetMapping("/stores/condition")
