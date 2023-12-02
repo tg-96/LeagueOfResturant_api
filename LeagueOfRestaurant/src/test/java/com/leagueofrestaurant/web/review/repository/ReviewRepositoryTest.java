@@ -8,7 +8,6 @@ import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
-import net.bytebuddy.build.ToStringPlugin;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -36,6 +35,7 @@ class ReviewRepositoryTest {
 
     @Autowired
     CommonService commonService;
+
     @Test
     public void 전체리뷰_조회() {
         Member member1 = new Member("한규정", "010-3022-1161", "msp214314", Gender.MALE, LocalDate.now(), MemberType.USER);
@@ -60,19 +60,8 @@ class ReviewRepositoryTest {
 
         // 전체 리뷰 조회
         List<Review> allReviews = reviewRepository.findAll();
-        List<Review> memberIdReviews = reviewRepository.findAllByStoreId(store1.getId());
 
         for (Review review : allReviews) {
-            System.out.println("Review ID: " + review.getId());
-            System.out.println("Rating: " + review.getRatingPoint());
-            System.out.println("Comment: " + review.getContent());
-            System.out.println("Image: " + review.getImg());
-            System.out.println("Member: " + review.getMember().getId());
-            System.out.println("Store: " + review.getStore().getId());
-            System.out.println("------------------------------------");
-        }
-
-        for (Review review : memberIdReviews) {
             System.out.println("Review ID: " + review.getId());
             System.out.println("Rating: " + review.getRatingPoint());
             System.out.println("Comment: " + review.getContent());
@@ -86,13 +75,9 @@ class ReviewRepositoryTest {
     @Test
     @DisplayName("가게의 리뷰수 카운트")
     public void countReview() {
-        Long count = reviewRepository.countByStoreIdAndSeason(2L,commonService.getSeason());
+        Long count = reviewRepository.countByStoreIdAndSeason(2L, commonService.getSeason());
         assertThat(count).isEqualTo(1);
     }
-    @org.junit.jupiter.api.Test
-    @Rollback(value = false)
-    public void delete(){
-        reviewRepository.deleteAll();
-    }
+
 
 }

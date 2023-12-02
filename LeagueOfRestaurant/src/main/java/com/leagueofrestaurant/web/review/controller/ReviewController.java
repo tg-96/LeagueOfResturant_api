@@ -1,6 +1,7 @@
 package com.leagueofrestaurant.web.review.controller;
 
 import com.leagueofrestaurant.web.common.ImageService;
+import com.leagueofrestaurant.web.common.SessionKey;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.service.ReviewService;
@@ -10,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+
+import static com.leagueofrestaurant.web.common.SessionKey.*;
 
 @RestController
 @RequestMapping("/reviews")
@@ -28,7 +32,7 @@ public class ReviewController {
 
     //리뷰 작성
     @PostMapping("/")
-    public ResponseEntity<String> createReview(@RequestParam("memberId") Long memberId,
+    public ResponseEntity<String> createReview( HttpSession session,
                                                @RequestParam("content") String content,
                                                @RequestParam("ratingPoint") Integer ratingPoint,
                                                @RequestParam(value = "image", required = false) MultipartFile image,
@@ -43,7 +47,7 @@ public class ReviewController {
             ReviewContent reviewContent = new ReviewContent(content, ratingPoint, imageFilePath, null);
             ReceiptInfo receiptInfo = new ReceiptInfo(storeName, address);
 
-            reviewService.createReview(memberId, reviewContent, receiptInfo);
+            reviewService.createReview((Long)session.getAttribute(LOGIN_SESSION_KEY), reviewContent, receiptInfo);
             return ResponseEntity.ok("Review created successfully");
         } catch (Exception e) {
             // 리뷰 생성 중 오류가 발생하면 이미지를 다시 삭제

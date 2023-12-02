@@ -45,9 +45,4 @@ public class StoreController {
         return storeService.getStoreListByCity(city);
     }
 
-    @PutMapping("/stores/initRank")
-    public ResponseEntity<Void> initRank() {
-        storeService.initRank();
-        return ResponseEntity.ok().build();
-    }
 }
