@@ -4,6 +4,7 @@ import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.seasonRank.domain.SeasonRank;
+import com.leagueofrestaurant.web.seasonRank.dto.NextSeasonTimeDto;
 import com.leagueofrestaurant.web.seasonRank.dto.SeasonRankDto;
 import com.leagueofrestaurant.web.seasonRank.respository.SeasonRankRepository;
 import com.leagueofrestaurant.web.store.domain.Store;
@@ -12,6 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +84,33 @@ public class SeasonRankService {
                         s.getRanking()
                 )).collect(Collectors.toList());
         return seasonRankDtoList;
+    }
+
+    //다음 시즌까지 날짜, 시간 계산
+    public NextSeasonTimeDto calculateTimeToNextSeason(){
+        LocalDate now = LocalDate.now();
+
+        String nowSeasonString = commonService.getSeason();
+        String nowSeason = nowSeasonString.substring(5);
+        LocalDateTime nextSeasonDateTime;
+
+        if(nowSeason.equals("Spring")){
+            nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.JUNE, 1, 0, 0);
+        } else if(nowSeason.equals("Summer")){
+            nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.SEPTEMBER, 1, 0, 0);
+        } else if(nowSeason.equals("Fall")){
+            nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.DECEMBER, 1, 0, 0);
+        } else { // Winter
+            nextSeasonDateTime = LocalDateTime.of(now.getYear()+1, Month.MARCH, 1, 0, 0);
+        }
+        long daysUntilNextSeason = ChronoUnit.DAYS.between(LocalDateTime.now(), nextSeasonDateTime);
+        long hoursUntilNextSeason = ChronoUnit.HOURS.between(LocalDateTime.now(), nextSeasonDateTime);
+        long minutesUntilNextSeason = ChronoUnit.MINUTES.between(LocalDateTime.now(), nextSeasonDateTime);
+
+        long days = daysUntilNextSeason;
+        long hours = hoursUntilNextSeason - (24 * daysUntilNextSeason);
+
+        return new NextSeasonTimeDto(days, hours);
     }
 
 }

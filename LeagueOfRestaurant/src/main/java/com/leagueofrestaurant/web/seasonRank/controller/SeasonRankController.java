@@ -1,5 +1,7 @@
 package com.leagueofrestaurant.web.seasonRank.controller;
 
+import com.leagueofrestaurant.web.common.CommonService;
+import com.leagueofrestaurant.web.seasonRank.dto.NextSeasonTimeDto;
 import com.leagueofrestaurant.web.seasonRank.dto.SeasonRankDto;
 import com.leagueofrestaurant.web.seasonRank.service.SeasonRankService;
 import com.leagueofrestaurant.web.store.service.StoreService;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -21,6 +25,7 @@ import java.util.List;
 public class SeasonRankController {
     private final SeasonRankService seasonRankService;
     private final StoreService storeService;
+    private final CommonService commonService;
 
     @GetMapping("/seasonRank/{season}/{city}")
     public List<SeasonRankDto> getSeasonRankByCity(@PathVariable("season") String season,
@@ -36,6 +41,18 @@ public class SeasonRankController {
     @GetMapping("/seasonRank/seasonName")
     public List<String> getSeasonName() {
         return seasonRankService.getSeasonName();
+    }
+
+    //현재 시즌 조회
+    @GetMapping("/seasonRank/now")
+    public String getPresentSeason() {
+        return commonService.getSeason();
+    }
+
+    //다음 시즌까지의 날짜,시간 조회
+    @GetMapping("/seasonRank/next")
+    public NextSeasonTimeDto getTimeToNextSeason(){
+        return seasonRankService.calculateTimeToNextSeason();
     }
 
     /**
