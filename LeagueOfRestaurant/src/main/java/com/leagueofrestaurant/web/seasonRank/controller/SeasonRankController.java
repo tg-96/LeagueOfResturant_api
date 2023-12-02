@@ -21,7 +21,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-
 public class SeasonRankController {
     private final SeasonRankService seasonRankService;
     private final StoreService storeService;

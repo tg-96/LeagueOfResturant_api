@@ -13,5 +13,6 @@ public class SeasonRankDto {
     private String city;
     private String season;
     private Integer ranking;
+    private String img;
 }
 
