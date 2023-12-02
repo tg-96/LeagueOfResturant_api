@@ -16,6 +16,11 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
+    @GetMapping("/")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("success");
+    }
+
     @GetMapping("/store/{id}")
     public ResponseStoreDto getStoreById(@PathVariable("id") Long storeId) {
         return storeService.getStoreById(storeId);
