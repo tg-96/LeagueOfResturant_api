@@ -16,7 +16,7 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("success");
     }
