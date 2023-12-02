@@ -23,6 +23,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/reports")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
+
 public class ReportController {
     private final ReportService reportService;
 

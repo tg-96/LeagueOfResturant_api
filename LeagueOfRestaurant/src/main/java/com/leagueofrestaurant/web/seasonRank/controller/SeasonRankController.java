@@ -5,6 +5,7 @@ import com.leagueofrestaurant.web.seasonRank.service.SeasonRankService;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
+
 public class SeasonRankController {
     private final SeasonRankService seasonRankService;
     private final StoreService storeService;
