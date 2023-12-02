@@ -28,14 +28,17 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     @Override
-    public Page<Review> findAllByStoreId(Long storeId, Pageable pageable) {
+    public Page<Review> findAllByStoreId(String season, Long storeId, Pageable pageable) {
         List<Review> content = queryFactory
                 .selectFrom(review)
-                .where(review.store.id.eq(storeId))
+                .where(
+                        review.store.id.eq(storeId)
+                                .and(review.season.eq(season))
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
+        System.out.println(content);
         Long count = queryFactory
                 .select(review.count())
                 .from(review)

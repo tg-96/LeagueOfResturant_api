@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReviewRepositoryCustom {
     List<Review> findAllByMemberId(Long member_Id);
-    Page<Review> findAllByStoreId(Long store_Id, Pageable pageable);
+    Page<Review> findAllByStoreId(String season, Long store_Id, Pageable pageable);
     List<Review> findByMemberIdAndStoreId(Long member_Id, Long store_Id, String season);
     Long countByStoreIdAndSeason(Long storeId,String season);
 }
