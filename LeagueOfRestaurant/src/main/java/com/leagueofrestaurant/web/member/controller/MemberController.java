@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -21,9 +23,9 @@ public class MemberController {
         return memberService.getAllMember();
     }
 
-    @GetMapping("/members/{id}")
-    public MemberDto getMemberById(@PathVariable("id") Long id) {
-        return memberService.getMemberById(id);
+    @GetMapping("/members/member")
+    public MemberDto getMember(HttpSession session) {
+        return memberService.getMemberById((Long) session.getAttribute(LOGIN_SESSION_KEY));
     }
 
     @GetMapping("/members/condition")
@@ -31,15 +33,18 @@ public class MemberController {
         return memberService.getByCondition(condition);
     }
 
-    @PutMapping("/members/edit/{id}")
-    public ResponseEntity<Void> editMemberInfo(@PathVariable("id") Long memberId, @RequestBody MemberEditReq req) {
-        memberService.editMember(req, memberId);
+    @PutMapping("/members/edit")
+    public ResponseEntity<Void> editMemberInfo(HttpSession session, @RequestBody MemberEditReq req) {
+        memberService.editMember(req, (Long) session.getAttribute(LOGIN_SESSION_KEY));
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/delete/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("id") Long memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping("/members/delete")
+    public ResponseEntity<Void> deleteMember(HttpSession session) {
+        boolean success = memberService.deleteMember((Long) session.getAttribute(LOGIN_SESSION_KEY));
+        if (success) {
+            session.removeAttribute(LOGIN_SESSION_KEY);
+        }
         return ResponseEntity.ok().build();
     }
 

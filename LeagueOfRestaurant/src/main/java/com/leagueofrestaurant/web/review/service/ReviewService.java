@@ -24,6 +24,8 @@ import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -80,10 +82,10 @@ public class ReviewService {
     }
 
     // 특정 가게의 리뷰 조회
-    public List<ReviewContent> getReviewsByStoreId(Long storeId) {
-        List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
+    public List<ReviewContent> getReviewsByStoreId(Long storeId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByStoreId(storeId,pageable);
 
-        return reviews.stream()
+        return reviews.getContent().stream()
                 .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
                 .collect(Collectors.toList());
     }

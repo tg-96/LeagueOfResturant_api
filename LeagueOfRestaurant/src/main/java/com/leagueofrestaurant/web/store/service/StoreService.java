@@ -10,10 +10,14 @@ import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,9 +41,9 @@ public class StoreService {
         return getStoreDtoList(storeList);
     }
 
-    public List<ResponseStoreDto> getStoreRankByCity(String city) {
-        List<Store> storeList = storeRepository.findRankListByCity(city);
-        return getStoreDtoList(storeList);
+    public List<ResponseStoreDto> getStoreRankByCity(String city, Pageable pageable) {
+        Page<Store> storeList = storeRepository.findRankListByCity(city,pageable);
+        return getStoreDtoList(storeList.getContent());
     }
 
     public List<ResponseStoreDto> getStoreListByCity(String city){
@@ -74,13 +78,14 @@ public class StoreService {
      */
     @Transactional
     public void initRank() {
-        List<Store> storeList = storeRepository.findAll();
-        Iterator<Store> iter = storeList.iterator();
-        while (iter.hasNext()) {
-            Store store = iter.next();
-            store.changeScore(0);
-            store.changeRating(0);
-        }
+            List<Store> storeList = storeRepository.findAll();
+            Iterator<Store> iter = storeList.iterator();
+            while (iter.hasNext()) {
+                Store store = iter.next();
+                store.changeScore(0);
+                store.changeRating(0);
+            }
+
     }
 
     /**

@@ -18,13 +18,12 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         this.query = new JPAQueryFactory(em);
     }
 
-
-
     @Override
     public Member findMemberByPhoneNumber(String phoneNumber) {
         return query
                 .selectFrom(member)
-                .where(member.phoneNumber.eq(phoneNumber))
+                .where(member.phoneNumber.eq(phoneNumber),
+                        member.isDeleted.isFalse())
                 .fetchOne();
     }
 

@@ -16,12 +16,14 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
-    public final static String LOGIN_SESSION_KEY = "USER_ID";
     private final MemberRepository memberRepository;
     private final Encryptor encryptor;
 
@@ -32,9 +34,13 @@ public class MemberService {
     }
 
     public MemberDto getMemberById(Long memberId) {
-        Member member = memberRepository.findById(memberId).get();
-        return new MemberDto(member.getName(), member.getPhoneNumber()
-                , member.getPassword(), member.getGender(), member.getBirthday());
+        try {
+            Member member = memberRepository.findById(memberId).get();
+            return new MemberDto(member.getName(), member.getPhoneNumber()
+                    , member.getPassword(), member.getGender(), member.getBirthday());
+        } catch (NoSuchElementException e) {
+            throw new LORException(ErrorCode.NO_SESSION);
+        }
     }
 
     /**
@@ -59,7 +65,7 @@ public class MemberService {
      * 멤버정보가 변경되지 않았으면 false 반환
      */
     @Transactional
-    public boolean editMember(MemberEditReq req, Long memberId) {
+    public void editMember(MemberEditReq req, Long memberId) {
         try {
             Member member = memberRepository.findById(memberId).get();
             if (req.getName() != null)
@@ -73,9 +79,8 @@ public class MemberService {
 
             if (req.getPassword() != null)
                 member.changePassword(encryptor.encrypt(req.getPassword()));
-            return true;
-        } catch (Exception e) {
-            return false;
+        } catch (NoSuchElementException e) {
+            throw new LORException(ErrorCode.NO_SESSION);
         }
     }
 
@@ -136,12 +141,15 @@ public class MemberService {
      * 멤버 soft delete
      */
     @Transactional
-    public void deleteMember(Long memberId) {
+    public boolean deleteMember(Long memberId) {
         try {
             Member member = memberRepository.findById(memberId).get();
             member.softDeleted();
+            return true;
         } catch (IllegalArgumentException e) {
             throw new LORException(ErrorCode.FAIL_TO_DELETE);
+        } catch (NoSuchElementException e) {
+            throw new LORException(ErrorCode.NO_SESSION);
         }
     }
     /**

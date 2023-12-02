@@ -4,6 +4,9 @@ import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -30,11 +33,20 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public List<Store> findRankListByCity(String city) {
-        return query.selectFrom(store)
+    public Page<Store> findRankListByCity(String city, Pageable pageable) {
+        List<Store> content = query.selectFrom(store)
                 .where(eqCity(city))
                 .orderBy(store.score.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        Long count = query
+                .select(store.count())
+                .from(store)
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, count);
     }
 
     @Override
