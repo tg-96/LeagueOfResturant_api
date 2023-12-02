@@ -45,6 +45,7 @@ public class ReviewController {
         try {
             if (image != null && !image.isEmpty()) {
                 imageFilePath = imageService.saveImage(image);
+                System.out.println("image saved.");
             }
             ReviewContent reviewContent = new ReviewContent(content, ratingPoint, imageFilePath, null);
             ReceiptInfo receiptInfo = new ReceiptInfo(storeName, address);

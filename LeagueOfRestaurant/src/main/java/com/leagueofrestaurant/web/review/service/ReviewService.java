@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -74,11 +75,16 @@ public class ReviewService {
 
     //특정 회원의 리뷰 조희
     public List<ReviewContent> getReviewsByMemberId(Long memberId) {
-        List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
+        try {
+            List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
-        return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
-                .collect(Collectors.toList());
+            return reviews.stream()
+                    .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
+                    .collect(Collectors.toList());
+        }
+        catch (NoSuchElementException e) {
+            throw new LORException(ErrorCode.NO_SESSION);
+        }
     }
 
     // 특정 가게의 리뷰 조회
@@ -117,54 +123,59 @@ public class ReviewService {
     //리뷰 생성
     @Transactional
     public void createReview(long memberId, ReviewContent reviewContent, ReceiptInfo receiptInfo) throws IOException {
-        // member가 존재하지 않는 경우 예외 처리
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
+        try {
+            // member가 존재하지 않는 경우 예외 처리
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new LORException(ErrorCode.NOT_EXIST_MEMBER));
 
-        // 영수증 정보에서 가게명, 주소, 도시명 추출, 시즌 추출
-        String storeName = receiptInfo.getStoreName();
-        String address = receiptInfo.getAddress();
-        String city = commonService.getCityString(address);
-        String season = commonService.getSeason();
+            // 영수증 정보에서 가게명, 주소, 도시명 추출, 시즌 추출
+            String storeName = receiptInfo.getStoreName();
+            String address = receiptInfo.getAddress();
+            String city = commonService.getCityString(address);
+            String season = commonService.getSeason();
 
-        // 가게명과 주소로 store를 찾기
-        StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, city, address);
-        List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
+            // 가게명과 주소로 store를 찾기
+            StoreSearchCondition storeSearchCondition = new StoreSearchCondition(storeName, city, address);
+            List<ResponseStoreDto> stores = storeService.getStoreListByCondition(storeSearchCondition);
 
-        if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
-            String storeImageUrl = null;
-            if(kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address) != null){
-                CrawlingStoreDto crawlingStoreDto = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address);
-                storeImageUrl = crawlingService.crawlStoreImageUrl(crawlingStoreDto.getStoreUrl());
+            if (stores.isEmpty()) { // 가게가 존재하지 않을 경우
+                String storeImageUrl = null;
+                if (kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address) != null) {
+                    CrawlingStoreDto crawlingStoreDto = kakaoService.selectStore(kakaoService.fetchKakaoSearch(storeName), address);
+                    storeImageUrl = crawlingService.crawlStoreImageUrl(crawlingStoreDto.getStoreUrl());
+                }
+                // 가게 생성
+                RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, storeImageUrl);
+                try {
+                    storeService.createStore(requestStoreDto);
+                    TransactionAspectSupport.currentTransactionStatus().flush(); // 트랜잭션이 커밋될 때까지 대기
+                } catch (IllegalArgumentException e) {
+                    throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
+                }
+            } else { // 가게가 존재하는 경우: 시즌 내에 해당 가게에 리뷰한 적 있다면 throw
+                List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getId(), season);
+                if (!(seasonReviews.isEmpty())) {
+                    throw new LORException(ErrorCode.DUPLICATE_REVIEW);
+                }
+
             }
-            // 가게 생성
-            RequestStoreDto requestStoreDto = new RequestStoreDto(storeName, address, city, storeImageUrl);
-            try {
-                storeService.createStore(requestStoreDto);
-                TransactionAspectSupport.currentTransactionStatus().flush(); // 트랜잭션이 커밋될 때까지 대기
-            } catch (IllegalArgumentException e) {
-                throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
-            }
+
+            List<Store> targetStores = storeRepository.findStoreListByCondition(storeSearchCondition);
+            Store targetStore = targetStores.get(0);
+            String content = reviewContent.getContent();
+            String img = reviewContent.getImg();
+            Integer ratingPoint = reviewContent.getRatingPoint();
+
+            Review review = new Review(ratingPoint, content, season, img, member, targetStore);
+            reviewRepository.save(review);
+
+            //targetStore의 평균 별점을 업데이트.. 그리고 실시간 점수(score 계산)
+            storeService.calculateRating(targetStore, (float) ratingPoint);
+            storeService.calculateScore(targetStore);
         }
-        else { // 가게가 존재하는 경우: 시즌 내에 해당 가게에 리뷰한 적 있다면 throw
-            List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getId(), season);
-            if(!(seasonReviews.isEmpty())){
-                throw new LORException(ErrorCode.DUPLICATE_REVIEW);
-            }
+        catch (NoSuchElementException e) {
+            throw new LORException(ErrorCode.NO_SESSION);
         }
-
-        List<Store> targetStores = storeRepository.findStoreListByCondition(storeSearchCondition);
-        Store targetStore = targetStores.get(0);
-        String content = reviewContent.getContent();
-        String img = reviewContent.getImg();
-        Integer ratingPoint = reviewContent.getRatingPoint();
-
-        Review review = new Review(ratingPoint, content, season, img, member, targetStore);
-        reviewRepository.save(review);
-
-        //targetStore의 평균 별점을 업데이트.. 그리고 실시간 점수(score 계산)
-        storeService.calculateRating(targetStore,(float)ratingPoint);
-        storeService.calculateScore(targetStore);
     }
 
     // 리뷰 삭제
