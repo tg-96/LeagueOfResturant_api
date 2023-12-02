@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,8 @@ public class StoreController {
     }
 
     @GetMapping("/stores")
-    public List<ResponseStoreDto> getAllStores() {
+    public List<ResponseStoreDto> getAllStores(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         return storeService.getAllStores();
     }
 
