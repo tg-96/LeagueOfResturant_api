@@ -2,9 +2,11 @@ package com.leagueofrestaurant.web.member.controller;
 
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
+import com.leagueofrestaurant.web.member.domain.Member;
 import com.leagueofrestaurant.web.member.dto.MemberDto;
 import com.leagueofrestaurant.web.member.dto.MemberEditReq;
 import com.leagueofrestaurant.web.member.dto.MemberSearchCondition;
+import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,9 @@ import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
-
 public class MemberController {
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/members")
     public List<MemberDto> getAllMember() {
@@ -70,6 +72,13 @@ public class MemberController {
             throw new LORException(ErrorCode.BLANK_PHONE_NUMBER);
         }
         memberService.phoneNumDuplicated(phoneNumber);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/members/validate/{password}")
+    public ResponseEntity<Void> validatePassword(@PathVariable String password, HttpSession session) {
+        Member member = memberRepository.findById((Long) session.getAttribute(LOGIN_SESSION_KEY)).get();
+        memberService.checkPassword(password, member);
         return ResponseEntity.ok().build();
     }
 }

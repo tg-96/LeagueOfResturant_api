@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/reports")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-
 public class ReportController {
     private final ReportService reportService;
 

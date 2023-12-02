@@ -7,7 +7,6 @@ import com.leagueofrestaurant.api.kakao.KakaoService;
 import com.leagueofrestaurant.api.ocr.OcrService;
 import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.common.CrawlingService;
-import com.leagueofrestaurant.web.common.ImageService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
@@ -23,7 +22,6 @@ import com.leagueofrestaurant.web.store.dto.StoreSearchCondition;
 import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import com.leagueofrestaurant.web.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -153,7 +150,7 @@ public class ReviewService {
                     throw new LORException(ErrorCode.FAIL_TO_CREATE_STORE);
                 }
             } else { // 가게가 존재하는 경우: 시즌 내에 해당 가게에 리뷰한 적 있다면 throw
-                List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getId(), season);
+                List<Review> seasonReviews = reviewRepository.findByMemberIdAndStoreId(member.getId(), stores.get(0).getStoreId(), season);
                 if (!(seasonReviews.isEmpty())) {
                     throw new LORException(ErrorCode.DUPLICATE_REVIEW);
                 }

@@ -21,12 +21,14 @@ public class SeasonRank {
     private String city;
     private String season;
     private Integer ranking;
+    private String img;
 
-    public SeasonRank(String storeName, Long storeId, String city, String season, Integer rank) {
+    public SeasonRank(String storeName, Long storeId, String city, String season, Integer rank,String img) {
         this.storeName = storeName;
         this.storeId = storeId;
         this.city = city;
         this.season = season;
         this.ranking = rank;
+        this.img = img;
     }
 }

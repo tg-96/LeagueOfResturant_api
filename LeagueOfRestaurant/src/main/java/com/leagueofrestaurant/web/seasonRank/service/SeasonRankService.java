@@ -37,7 +37,7 @@ public class SeasonRankService {
             int rank = 1;
             //city별 top10 store를 SeasonRank에 저장, 현재 시즌으로 저장
             for (Store store : RankStores) {
-                SeasonRank seasonRank = new SeasonRank(store.getName(), store.getId(), store.getCity(), commonService.getSeason(), rank);
+                SeasonRank seasonRank = new SeasonRank(store.getName(), store.getId(), store.getCity(), commonService.getSeason(), rank,store.getImg());
                 seasonRankRepository.save(seasonRank);
                 rank++;
             }
@@ -76,7 +76,8 @@ public class SeasonRankService {
                         s.getStoreId(),
                         s.getCity(),
                         s.getSeason(),
-                        s.getRanking()
+                        s.getRanking(),
+                        s.getSeason()
                 )).collect(Collectors.toList());
         return seasonRankDtoList;
     }

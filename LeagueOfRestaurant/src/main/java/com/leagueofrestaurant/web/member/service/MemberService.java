@@ -158,11 +158,11 @@ public class MemberService {
 
     /**
      * 멤버 전화번호와 비밀번호가 일치하는지 확인
-     * 일치하면 true, 일치하지 않으면 false
+     * 일치하면 true, 일치하지 않으면 exception
      */
     public boolean checkPassword(String password, Member member) {
         if (encryptor.isMatch(password, member.getPassword())) return true;
-        return false;
+        throw new LORException(ErrorCode.PASSWORD_NOT_MATCHED);
     }
 
     /**
