@@ -46,7 +46,7 @@ public class WishService {
      */
     public List<ResponseStoreDto> getWishListByMemberId(Long memberId) {
         List<Store> wishList = wishRepository.findAllByMemberId(memberId);
-        if(wishList.size() == 0){
+        if (wishList.size() == 0) {
             throw new LORException(ErrorCode.NO_WISHLIST);
         }
         List<ResponseStoreDto> responseStoreDtoList = wishList.stream()
@@ -55,7 +55,9 @@ public class WishService {
                         w.getName(),
                         w.getAddress(),
                         w.getCity(),
-                        w.getImg()))
+                        w.getImg(),
+                        w.getRating(),
+                        w.getScore()))
                 .collect(Collectors.toList());
         return responseStoreDtoList;
     }

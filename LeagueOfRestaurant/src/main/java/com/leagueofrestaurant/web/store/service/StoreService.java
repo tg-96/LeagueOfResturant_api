@@ -12,12 +12,10 @@ import com.leagueofrestaurant.web.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +30,7 @@ public class StoreService {
 
     public ResponseStoreDto getStoreById(Long storeId) {
         Store store = storeRepository.findById(storeId).get();
-        ResponseStoreDto storeDto = new ResponseStoreDto(store.getId(), store.getName(), store.getAddress(), store.getCity(), store.getImg());
+        ResponseStoreDto storeDto = new ResponseStoreDto(store.getId(), store.getName(), store.getAddress(), store.getCity(), store.getImg(), store.getRating(),store.getScore());
         return storeDto;
     }
 
@@ -42,11 +40,11 @@ public class StoreService {
     }
 
     public List<ResponseStoreDto> getStoreRankByCity(String city, Pageable pageable) {
-        Page<Store> storeList = storeRepository.findRankListByCity(city,pageable);
+        Page<Store> storeList = storeRepository.findRankListByCity(city, pageable);
         return getStoreDtoList(storeList.getContent());
     }
 
-    public List<ResponseStoreDto> getStoreListByCity(String city){
+    public List<ResponseStoreDto> getStoreListByCity(String city) {
         List<Store> storeList = storeRepository.findStoreByCity(city);
         return getStoreDtoList(storeList);
     }
@@ -78,13 +76,13 @@ public class StoreService {
      */
     @Transactional
     public void initRank() {
-            List<Store> storeList = storeRepository.findAll();
-            Iterator<Store> iter = storeList.iterator();
-            while (iter.hasNext()) {
-                Store store = iter.next();
-                store.changeScore(0);
-                store.changeRating(0);
-            }
+        List<Store> storeList = storeRepository.findAll();
+        Iterator<Store> iter = storeList.iterator();
+        while (iter.hasNext()) {
+            Store store = iter.next();
+            store.changeScore(0);
+            store.changeRating(0);
+        }
 
     }
 
@@ -126,11 +124,11 @@ public class StoreService {
     private static List<ResponseStoreDto> getStoreDtoList(List<Store> storeList) {
         try {
             return storeList.stream()
-                    .map(s -> new ResponseStoreDto(s.getId(), s.getName(), s.getAddress(), s.getCity(), s.getImg()))
+                    .map(s -> new ResponseStoreDto(s.getId(), s.getName(), s.getAddress(), s.getCity(), s.getImg(), s.getRating(),s.getScore()))
                     .collect(Collectors.toList());
         } catch (NullPointerException e) {
             throw new LORException(ErrorCode.NO_EXIST_STORE);
-        }
     }
+        }
 
 }
