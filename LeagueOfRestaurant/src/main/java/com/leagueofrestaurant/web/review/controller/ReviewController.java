@@ -20,7 +20,7 @@ import static com.leagueofrestaurant.web.common.SessionKey.*;
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReviewController {
     private final ReviewService reviewService;
     private final ImageService imageService;

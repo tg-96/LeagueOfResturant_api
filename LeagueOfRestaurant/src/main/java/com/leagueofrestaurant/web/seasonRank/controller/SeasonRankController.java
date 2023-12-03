@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SeasonRankController {
     private final SeasonRankService seasonRankService;
     private final StoreService storeService;
