@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.member.controller;
 
+import com.leagueofrestaurant.web.common.SessionKey;
 import com.leagueofrestaurant.web.member.dto.JoinReq;
 import com.leagueofrestaurant.web.member.dto.LoginReq;
 import com.leagueofrestaurant.web.member.service.MemberService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
@@ -21,7 +24,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody @Valid LoginReq loginReq, HttpSession session){
         memberService.login(loginReq,session);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
     }
 
     @PostMapping("/logout")
@@ -33,7 +36,7 @@ public class LoginController {
     @PostMapping("/join")
     public ResponseEntity<Void> join(@RequestBody @Valid JoinReq joinReq,HttpSession session){
         memberService.join(joinReq,session);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
     }
 
 }
