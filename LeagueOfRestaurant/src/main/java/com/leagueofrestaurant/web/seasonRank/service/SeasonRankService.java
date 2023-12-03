@@ -104,10 +104,11 @@ public class SeasonRankService {
         } else { // Winter
             nextSeasonDateTime = LocalDateTime.of(now.getYear()+1, Month.MARCH, 1, 0, 0);
         }
+//        System.out.println(LocalDateTime.now());
         long daysUntilNextSeason = ChronoUnit.DAYS.between(LocalDateTime.now(), nextSeasonDateTime);
         long hoursUntilNextSeason = ChronoUnit.HOURS.between(LocalDateTime.now(), nextSeasonDateTime);
-        long minutesUntilNextSeason = ChronoUnit.MINUTES.between(LocalDateTime.now(), nextSeasonDateTime);
-
+        System.out.println(LocalDateTime.now());
+        System.out.println(nextSeasonDateTime);
         long days = daysUntilNextSeason;
         long hours = hoursUntilNextSeason - (24 * daysUntilNextSeason);
 
