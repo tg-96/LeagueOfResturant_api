@@ -20,7 +20,7 @@ import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
     private final MemberService memberService;
     @PostMapping("/login")
