@@ -54,7 +54,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +64,7 @@ public class ReviewService {
 
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            return new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason());
+            return new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(),review.getId());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -76,7 +76,7 @@ public class ReviewService {
             List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
             return reviews.stream()
-                    .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
+                    .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
                     .collect(Collectors.toList());
         }
         catch (NoSuchElementException e) {
@@ -89,7 +89,7 @@ public class ReviewService {
         Page<Review> reviews = reviewRepository.findAllByStoreId(season, storeId,pageable);
 
         return reviews.getContent().stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason()))
+                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(),review.getId()))
                 .collect(Collectors.toList());
     }
 

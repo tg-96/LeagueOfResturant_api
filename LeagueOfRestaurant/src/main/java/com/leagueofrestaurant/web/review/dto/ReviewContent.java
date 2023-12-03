@@ -14,4 +14,5 @@ public class ReviewContent {
     private Integer ratingPoint;
     private String img;
     private String season;
+    private Long reviewId;
 }

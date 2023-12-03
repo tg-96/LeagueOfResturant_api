@@ -26,22 +26,22 @@
 //    @Test
 //    @Rollback(value = false)
 //    public void 조건별_조회() {
-//        Store store1 = new Store("a", "aa", "aaa", null);
-//        Store store2 = new Store("b", "bb", "ccc", null);
-//        Store store3 = new Store("z", "q", "p", null);
-//        Store store4 = new Store("hh", "gg", "ff", null);
-//
-//        List<Store> storeList = new ArrayList<>();
-//        storeList.add(store1);
-//        storeList.add(store2);
-//        storeList.add(store3);
-//        storeList.add(store4);
-//        storeRepository.saveAllAndFlush(storeList);
-//
-//        List<String> allCity = storeRepository.findAllCity();
-//        System.out.println("----------------");
-//        for(String city:allCity) {
-//            System.out.println(city);
-//        }
+////        Store store1 = new Store("a", "aa", "aaa", null);
+////        Store store2 = new Store("b", "bb", "ccc", null);
+////        Store store3 = new Store("z", "q", "p", null);
+////        Store store4 = new Store("hh", "gg", "ff", null);
+////
+////        List<Store> storeList = new ArrayList<>();
+////        storeList.add(store1);
+////        storeList.add(store2);
+////        storeList.add(store3);
+////        storeList.add(store4);
+////        storeRepository.saveAllAndFlush(storeList);
+////
+////        List<String> allCity = storeRepository.findAllCity();
+////        System.out.println("----------------");
+////        for(String city:allCity) {
+////            System.out.println(city);
+////        }
 //    }
 //}
