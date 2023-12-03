@@ -40,19 +40,9 @@ public class LoginController {
 
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody @Valid JoinReq joinReq,HttpSession session,HttpServletResponse response){
-        try{
-            memberService.join(joinReq,session);
-            Cookie sessionCookie = new Cookie(LOGIN_SESSION_KEY, session.getId());
-            response.addCookie(sessionCookie);
-            return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
-        }  catch (Exception e) {
-            // 예외 발생 시 클라이언트에게 에러 메시지 반환
-            String errorMessage = "회원 가입 실패: " + e.getMessage();
-            e.printStackTrace(); // 예외 내용을 콘솔에 출력하는 예시
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-        }
-
+        memberService.join(joinReq,session);
+        Cookie sessionCookie = new Cookie(LOGIN_SESSION_KEY, session.getId());
+        response.addCookie(sessionCookie);
+        return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
     }
-
-
 }
