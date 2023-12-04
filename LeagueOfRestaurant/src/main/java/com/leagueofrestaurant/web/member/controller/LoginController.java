@@ -25,11 +25,9 @@ import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 public class LoginController {
     private final MemberService memberService;
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginReq loginReq, HttpSession session, HttpServletResponse response){
+    public ResponseEntity<Void> login(@RequestBody @Valid LoginReq loginReq, HttpSession session){
         memberService.login(loginReq,session);
-        Cookie sessionCookie = new Cookie(LOGIN_SESSION_KEY, session.getId());
-        response.addCookie(sessionCookie);
-        return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")
@@ -41,8 +39,6 @@ public class LoginController {
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody @Valid JoinReq joinReq,HttpSession session,HttpServletResponse response){
         memberService.join(joinReq,session);
-        Cookie sessionCookie = new Cookie(LOGIN_SESSION_KEY, session.getId());
-        response.addCookie(sessionCookie);
-        return ResponseEntity.ok().header(LOGIN_SESSION_KEY, session.getId()).build();
+        return ResponseEntity.ok().build();
     }
 }

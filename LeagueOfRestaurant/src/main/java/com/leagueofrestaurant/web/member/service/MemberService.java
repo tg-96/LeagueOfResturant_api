@@ -89,20 +89,24 @@ public class MemberService {
      */
     @Transactional
     public void join(JoinReq req, HttpSession session) {
-        Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(req.getPhoneNumber());
-        if (memberByPhoneNumber != null) throw new LORException(ErrorCode.ALREADY_EXISTS_USER);
+        try {
+            Member memberByPhoneNumber = memberRepository.findMemberByPhoneNumber(req.getPhoneNumber());
+            if (memberByPhoneNumber != null) throw new LORException(ErrorCode.ALREADY_EXISTS_USER);
 
-        final Member member = new Member(
-                req.getName(),
-                req.getPhoneNumber(),
-                encryptor.encrypt(req.getPassword()),
-                req.getGender(),
-                req.getBirthday(),
-                MemberType.USER
-        );
-        Member memberEntity = memberRepository.saveAndFlush(member);
-        // 세션에 키 부여
-        session.setAttribute(LOGIN_SESSION_KEY, memberEntity.getId());
+            final Member member = new Member(
+                    req.getName(),
+                    req.getPhoneNumber(),
+                    encryptor.encrypt(req.getPassword()),
+                    req.getGender(),
+                    req.getBirthday(),
+                    MemberType.USER
+            );
+            Member memberEntity = memberRepository.saveAndFlush(member);
+            // 세션에 키 부여
+            session.setAttribute(LOGIN_SESSION_KEY, memberEntity.getId());
+        }catch (Exception e){
+
+        }
     }
 
     /**
