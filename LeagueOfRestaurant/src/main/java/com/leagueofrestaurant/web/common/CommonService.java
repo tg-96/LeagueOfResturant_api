@@ -79,7 +79,7 @@ public class CommonService {
     }
 
     public String getPath(String path) {
-        StringTokenizer st = new StringTokenizer(path, "\\");
+        StringTokenizer st = new StringTokenizer(path, "/");
         String newPath = "";
         while (st.hasMoreTokens()) {
             newPath = st.nextToken();
