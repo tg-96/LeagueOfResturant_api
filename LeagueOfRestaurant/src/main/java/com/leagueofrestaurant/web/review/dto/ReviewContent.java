@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ReviewContent {
+    private String storeName;
     private String content;
     private Integer ratingPoint;
     private String img;

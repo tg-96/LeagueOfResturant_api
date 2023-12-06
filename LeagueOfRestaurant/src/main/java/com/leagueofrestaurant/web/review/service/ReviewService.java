@@ -10,11 +10,11 @@ import com.leagueofrestaurant.web.common.CrawlingService;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
 import com.leagueofrestaurant.web.member.domain.Member;
+import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.review.domain.Review;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
 import com.leagueofrestaurant.web.review.repository.ReviewRepository;
-import com.leagueofrestaurant.web.member.repository.MemberRepository;
 import com.leagueofrestaurant.web.store.domain.Store;
 import com.leagueofrestaurant.web.store.dto.RequestStoreDto;
 import com.leagueofrestaurant.web.store.dto.ResponseStoreDto;
@@ -54,7 +54,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
+                .map(review -> new ReviewContent(review.getStore().getName(), review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +64,7 @@ public class ReviewService {
 
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            return new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(),review.getId());
+            return new ReviewContent(review.getStore().getName(),review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
         }
@@ -76,20 +76,19 @@ public class ReviewService {
             List<Review> reviews = reviewRepository.findAllByMemberId(memberId);
 
             return reviews.stream()
-                    .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
+                    .map(review -> new ReviewContent(review.getStore().getName(),review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
                     .collect(Collectors.toList());
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new LORException(ErrorCode.NO_SESSION);
         }
     }
 
     // 특정 가게의 리뷰 조회
     public List<ReviewContent> getReviewsByStoreId(String season, Long storeId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByStoreId(season, storeId,pageable);
+        Page<Review> reviews = reviewRepository.findAllByStoreId(season, storeId, pageable);
 
         return reviews.getContent().stream()
-                .map(review -> new ReviewContent(review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(),review.getId()))
+                .map(review -> new ReviewContent(review.getStore().getName(),review.getContent(), review.getRatingPoint(), review.getImg(), review.getSeason(), review.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -103,15 +102,13 @@ public class ReviewService {
 
         if (!"SUCCESS".equals(message)) { //실패
             throw new LORException(ErrorCode.RECEIPT_ERROR);
-        }
-        else{ //성공
+        } else { //성공
             String storeName = receiptData.get(1);
             String storeAddress = receiptData.get(2);
             String city = commonService.getCityString(storeAddress); // 서울,인천,경기도가 아닌 경우 예외 처리
-            if(commonService.isBoundary(city)){
+            if (commonService.isBoundary(city)) {
                 return new ReceiptInfo(storeName, storeAddress);
-            }
-            else{ //서비스 지역이 아님
+            } else { //서비스 지역이 아님
                 throw new LORException(ErrorCode.NOT_SUPPORT_AREA);
             }
         }
@@ -169,8 +166,7 @@ public class ReviewService {
             //targetStore의 평균 별점을 업데이트.. 그리고 실시간 점수(score 계산)
             storeService.calculateRating(targetStore, (float) ratingPoint);
             storeService.calculateScore(targetStore);
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new LORException(ErrorCode.NO_SESSION);
         }
     }

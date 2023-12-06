@@ -104,8 +104,8 @@ public class MemberService {
             Member memberEntity = memberRepository.saveAndFlush(member);
             // 세션에 키 부여
             session.setAttribute(LOGIN_SESSION_KEY, memberEntity.getId());
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            throw new RuntimeException("join 문제");
         }
     }
 

@@ -46,7 +46,7 @@ public class ReviewController {
                 imageFilePath = imageService.saveImage(image);
                 System.out.println("image saved.");
             }
-            ReviewContent reviewContent = new ReviewContent(content, ratingPoint, imageFilePath, null,null);
+            ReviewContent reviewContent = new ReviewContent(storeName,content, ratingPoint, imageFilePath, null,null);
             ReceiptInfo receiptInfo = new ReceiptInfo(storeName, address);
 
             reviewService.createReview((Long)session.getAttribute(LOGIN_SESSION_KEY), reviewContent, receiptInfo);

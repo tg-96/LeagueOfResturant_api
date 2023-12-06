@@ -17,7 +17,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-static/
+#static/
 
 ### IntelliJ IDEA ###
 application-property.yml
