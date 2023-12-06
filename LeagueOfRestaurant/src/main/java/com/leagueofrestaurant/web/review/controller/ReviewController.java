@@ -1,9 +1,9 @@
 package com.leagueofrestaurant.web.review.controller;
 
 import com.leagueofrestaurant.web.common.ImageService;
-import com.leagueofrestaurant.web.common.SessionKey;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
+import com.leagueofrestaurant.web.review.dto.ReviewDto;
 import com.leagueofrestaurant.web.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-import static com.leagueofrestaurant.web.common.SessionKey.*;
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @RestController
 @RequestMapping("/reviews")
@@ -33,12 +33,10 @@ public class ReviewController {
 
     //리뷰 작성
     @PostMapping("/")
-    public ResponseEntity<String> createReview( HttpSession session,
-                                               @RequestParam("content") String content,
-                                               @RequestParam("ratingPoint") Integer ratingPoint,
-                                               @RequestParam(value = "image", required = false) MultipartFile image,
-                                               @RequestParam("storeName") String storeName,
-                                               @RequestParam("address") String address) throws IOException {
+    public ResponseEntity<String> createReview(HttpSession session,
+                                               @RequestBody ReviewDto reviewDto,
+                                               @RequestParam(value = "image", required = false) MultipartFile image
+    ) throws IOException {
         String imageFilePath = null;
 
         try {
@@ -46,10 +44,10 @@ public class ReviewController {
                 imageFilePath = imageService.saveImage(image);
                 System.out.println("image saved.");
             }
-            ReviewContent reviewContent = new ReviewContent(storeName,content, ratingPoint, imageFilePath, null,null);
-            ReceiptInfo receiptInfo = new ReceiptInfo(storeName, address);
+            ReviewContent reviewContent = new ReviewContent(reviewDto.getStoreName(), reviewDto.getContent(), reviewDto.getRatingPoint(), imageFilePath, null, null);
+            ReceiptInfo receiptInfo = new ReceiptInfo(reviewDto.getStoreName(), reviewDto.getAddress());
 
-            reviewService.createReview((Long)session.getAttribute(LOGIN_SESSION_KEY), reviewContent, receiptInfo);
+            reviewService.createReview((Long) session.getAttribute(LOGIN_SESSION_KEY), reviewContent, receiptInfo);
             return ResponseEntity.ok("Review created successfully");
         } catch (Exception e) {
             // 리뷰 생성 중 오류가 발생하면 이미지를 다시 삭제
@@ -69,7 +67,7 @@ public class ReviewController {
     //특정 사용자의 리뷰 조회
     @GetMapping("/member")
     public List<ReviewContent> getReviewsByMember(HttpSession session) {
-        return reviewService.getReviewsByMemberId((Long)session.getAttribute(LOGIN_SESSION_KEY));
+        return reviewService.getReviewsByMemberId((Long) session.getAttribute(LOGIN_SESSION_KEY));
     }
 
     //특정 가게의 리뷰 조회
