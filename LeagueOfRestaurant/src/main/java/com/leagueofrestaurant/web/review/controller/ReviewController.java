@@ -34,7 +34,7 @@ public class ReviewController {
     //리뷰 작성
     @PostMapping("/")
     public ResponseEntity<String> createReview(HttpSession session,
-                                               @RequestBody ReviewDto reviewDto,
+                                               @RequestPart ReviewDto reviewDto,
                                                @RequestParam(value = "image", required = false) MultipartFile image
     ) throws IOException {
         String imageFilePath = null;
