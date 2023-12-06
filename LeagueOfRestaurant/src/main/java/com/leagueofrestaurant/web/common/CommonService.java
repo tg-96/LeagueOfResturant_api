@@ -59,9 +59,7 @@ public class CommonService {
         }
     }
 
-    /**
-     * 리팩토링 : Set으로 바꾸면 시간 복잡도 면에서 더 좋으려나...?
-     */
+
     public boolean isBoundary(String city) {
         String[] cities = {
                 "서울", "수원", "성남", "용인", "안양", "안산",
@@ -79,7 +77,7 @@ public class CommonService {
     }
 
     public String getPath(String path) {
-        StringTokenizer st = new StringTokenizer(path, "/");
+        StringTokenizer st = new StringTokenizer(path, "\\");
         String newPath = "";
         while (st.hasMoreTokens()) {
             newPath = st.nextToken();
