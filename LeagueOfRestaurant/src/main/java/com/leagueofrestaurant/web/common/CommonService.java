@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Service
 @RequiredArgsConstructor
@@ -78,9 +79,14 @@ public class CommonService {
     }
 
     public String getPath(String path) {
-        String filename = path.substring(path.lastIndexOf('\\') + 1);
+        StringTokenizer st = new StringTokenizer(path, "\\");
+        String newPath = "";
+        while (st.hasMoreTokens()) {
+            newPath = st.nextToken();
+            System.out.println(newPath);
+        }
         String baseUrl = "http://15.165.26.32:8080/images/";
-        return baseUrl + filename;
+        return baseUrl + newPath;
     }
 
 }
