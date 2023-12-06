@@ -2,10 +2,12 @@ package com.leagueofrestaurant.web.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +25,8 @@ public class CommonService {
             season = "Summer";
         } else if (month.getValue() >= 9 && month.getValue() <= 11) {
             season = "Fall";
-        }
-        else { // 12,1,2월의 경우
-            if(month.getValue() == 1 || month.getValue() == 2){
+        } else { // 12,1,2월의 경우
+            if (month.getValue() == 1 || month.getValue() == 2) {
                 year--;
             }
             season = "Winter";
@@ -39,13 +40,11 @@ public class CommonService {
 
         // '시' 또는 '군'으로 끝나는 토큰 추출
         for (String token : tokens) {
-            if (token.equals("서울") || token.equals("서울특별시")){
+            if (token.equals("서울") || token.equals("서울특별시")) {
                 return "서울";
-            }
-            else if (token.equals("인천") || token.equals("인천광역시")){
+            } else if (token.equals("인천") || token.equals("인천광역시")) {
                 return "인천";
-            }
-            else if (token.endsWith("시") || token.endsWith("군")) {
+            } else if (token.endsWith("시") || token.endsWith("군")) {
                 extractedToken = token;
                 break;
             }
@@ -78,4 +77,16 @@ public class CommonService {
         }
         return false;
     }
+
+    public String getPath(String path) {
+        StringTokenizer st = new StringTokenizer(path, "/");
+        String newPath = "";
+        while (st.hasMoreTokens()) {
+            newPath = st.nextToken();
+            System.out.println(newPath);
+        }
+        String baseUrl = "http://15.165.26.32:8080/images/";
+        return baseUrl + newPath;
+    }
+
 }

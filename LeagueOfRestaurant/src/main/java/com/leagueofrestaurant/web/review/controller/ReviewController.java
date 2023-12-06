@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.review.controller;
 
+import com.leagueofrestaurant.web.common.CommonService;
 import com.leagueofrestaurant.web.common.ImageService;
 import com.leagueofrestaurant.web.review.dto.ReceiptInfo;
 import com.leagueofrestaurant.web.review.dto.ReviewContent;
@@ -24,6 +25,7 @@ import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 public class ReviewController {
     private final ReviewService reviewService;
     private final ImageService imageService;
+    private final CommonService commonService;
 
     //모든 리뷰 조회
     @GetMapping("/")
@@ -44,7 +46,7 @@ public class ReviewController {
                 imageFilePath = imageService.saveImage(image);
                 System.out.println("image saved.");
             }
-            ReviewContent reviewContent = new ReviewContent(reviewDto.getStoreName(), reviewDto.getContent(), reviewDto.getRatingPoint(), imageFilePath, null, null);
+            ReviewContent reviewContent = new ReviewContent(reviewDto.getStoreName(), reviewDto.getContent(), reviewDto.getRatingPoint(), commonService.getPath(imageFilePath), null, null);
             ReceiptInfo receiptInfo = new ReceiptInfo(reviewDto.getStoreName(), reviewDto.getAddress());
 
             reviewService.createReview((Long) session.getAttribute(LOGIN_SESSION_KEY), reviewContent, receiptInfo);
