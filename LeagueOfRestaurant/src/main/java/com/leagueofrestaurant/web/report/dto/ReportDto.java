@@ -15,9 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class ReportDto {
+    private Long reportId;
     private Type type;
     private String content;
-    private Long memberId;
     private Long reviewId;
 }
 

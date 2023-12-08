@@ -83,8 +83,7 @@ public class CommonService {
             newPath = st.nextToken();
             System.out.println(newPath);
         }
-        String baseUrl = "http://15.165.26.32:8080/images/";
-        return baseUrl + newPath;
+        return newPath;
     }
 
 }

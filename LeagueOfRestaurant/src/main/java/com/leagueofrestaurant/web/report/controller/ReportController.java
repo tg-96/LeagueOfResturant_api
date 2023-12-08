@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +33,8 @@ public class ReportController {
 
     // 신고 생성
     @PostMapping("/")
-    public ResponseEntity<String> createReport(@RequestBody ReportDto reportDto){
-        reportService.createReport(reportDto);
+    public ResponseEntity<String> createReport(@RequestBody ReportDto reportDto, HttpSession session){
+        reportService.createReport(reportDto,session);
         return ResponseEntity.ok("Report created successfully");
     }
 
@@ -60,9 +61,9 @@ public class ReportController {
     }
 
     // 특정 회원의 신고내역 조회
-    @GetMapping("/member/{memberId}")
-    public List<ReportDto> getReportsByMemberId(@PathVariable Long memberId) {
-        return reportService.getReportsByMemberId(memberId);
+    @GetMapping("/member")
+    public List<ReportDto> getReportsByMemberId(HttpSession session) {
+        return reportService.getReportsByMemberId(session);
     }
 
     // 처리상태로 신고내역 조회

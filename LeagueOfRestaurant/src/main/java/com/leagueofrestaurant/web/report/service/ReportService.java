@@ -1,5 +1,6 @@
 package com.leagueofrestaurant.web.report.service;
 
+import com.leagueofrestaurant.web.common.SessionKey;
 import com.leagueofrestaurant.web.common.Status;
 import com.leagueofrestaurant.web.exception.ErrorCode;
 import com.leagueofrestaurant.web.exception.LORException;
@@ -15,9 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.leagueofrestaurant.web.common.SessionKey.LOGIN_SESSION_KEY;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,10 +33,9 @@ public class ReportService {
 
     //신고 생성
     @Transactional
-    public void createReport(ReportDto reportDto) {
-        System.out.println(reportDto.getMemberId());
+    public void createReport(ReportDto reportDto, HttpSession session) {
         Optional<Review> reviewOptional = reviewRepository.findById(reportDto.getReviewId());
-        Optional<Member> memberOptional = memberRepository.findById(reportDto.getMemberId());
+        Optional<Member> memberOptional = memberRepository.findById((Long)session.getAttribute(LOGIN_SESSION_KEY));
 
         if(!(reviewOptional.isPresent())){
             throw new LORException(ErrorCode.NOT_EXIST_REVIEW);
@@ -68,7 +71,7 @@ public class ReportService {
         List<Report> reports = reportRepository.findAll();
 
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getId(), report.getType(), report.getContent(), report.getReview().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -78,17 +81,17 @@ public class ReportService {
 
         if (optionalReport.isPresent()) {
             Report report = optionalReport.get();
-            return new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId());
+            return new ReportDto(report.getId(),report.getType(), report.getContent(), report.getReview().getId());
         } else {
             throw new LORException(ErrorCode.NOT_EXIST_REPORT);
         }
     }
 
     // 특정 회원의 신고내역 조회
-    public List<ReportDto> getReportsByMemberId(Long memberId) {
-        List<Report> reports = reportRepository.findAllByMemberId(memberId);
+    public List<ReportDto> getReportsByMemberId(HttpSession session) {
+        List<Report> reports = reportRepository.findAllByMemberId((Long)session.getAttribute(LOGIN_SESSION_KEY));
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getId(), report.getType(), report.getContent(), report.getReview().getId()))
                 .collect(Collectors.toList());
 
     }
@@ -98,7 +101,7 @@ public class ReportService {
         List<Report> reports = reportRepository.findAllByStatus(status);
 
         return reports.stream()
-                .map(report -> new ReportDto(report.getType(), report.getContent(), report.getMember().getId(), report.getReview().getId()))
+                .map(report -> new ReportDto(report.getId(), report.getType(), report.getContent(), report.getReview().getId()))
                 .collect(Collectors.toList());
     }
 
