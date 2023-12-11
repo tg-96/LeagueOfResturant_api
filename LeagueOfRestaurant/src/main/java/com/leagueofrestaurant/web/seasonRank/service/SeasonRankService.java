@@ -42,7 +42,7 @@ public class SeasonRankService {
             int rank = 1;
             //city별 top10 store를 SeasonRank에 저장, 현재 시즌으로 저장
             for (Store store : RankStores) {
-                SeasonRank seasonRank = new SeasonRank(store.getName(), store.getId(), store.getCity(), commonService.getSeason(), rank,store.getImg());
+                SeasonRank seasonRank = new SeasonRank(store.getName(), store.getId(), store.getCity(), commonService.getSeason(), rank, store.getImg());
                 seasonRankRepository.save(seasonRank);
                 rank++;
             }
@@ -70,7 +70,8 @@ public class SeasonRankService {
         List<SeasonRank> seasonRank = seasonRankRepository.findSeasonRankByCity(season, city);
         return getSeasonRanks(seasonRank);
     }
-    public List<String> getSeasonName(){
+
+    public List<String> getSeasonName() {
         return seasonRankRepository.getSeasonName();
     }
 
@@ -82,27 +83,27 @@ public class SeasonRankService {
                         s.getCity(),
                         s.getSeason(),
                         s.getRanking(),
-                        s.getSeason()
+                        s.getImg()
                 )).collect(Collectors.toList());
         return seasonRankDtoList;
     }
 
     //다음 시즌까지 날짜, 시간 계산
-    public NextSeasonTimeDto calculateTimeToNextSeason(){
+    public NextSeasonTimeDto calculateTimeToNextSeason() {
         LocalDate now = LocalDate.now();
 
         String nowSeasonString = commonService.getSeason();
         String nowSeason = nowSeasonString.substring(5);
         LocalDateTime nextSeasonDateTime;
 
-        if(nowSeason.equals("Spring")){
+        if (nowSeason.equals("Spring")) {
             nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.JUNE, 1, 0, 0);
-        } else if(nowSeason.equals("Summer")){
+        } else if (nowSeason.equals("Summer")) {
             nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.SEPTEMBER, 1, 0, 0);
-        } else if(nowSeason.equals("Fall")){
+        } else if (nowSeason.equals("Fall")) {
             nextSeasonDateTime = LocalDateTime.of(now.getYear(), Month.DECEMBER, 1, 0, 0);
         } else { // Winter
-            nextSeasonDateTime = LocalDateTime.of(now.getYear()+1, Month.MARCH, 1, 0, 0);
+            nextSeasonDateTime = LocalDateTime.of(now.getYear() + 1, Month.MARCH, 1, 0, 0);
         }
 //        System.out.println(LocalDateTime.now());
         long daysUntilNextSeason = ChronoUnit.DAYS.between(LocalDateTime.now(), nextSeasonDateTime);
