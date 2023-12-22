@@ -45,7 +45,7 @@
 
 ### MemberController
 
-#### GET 모든멤버조회
+> #### GET 모든멤버조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/members'  
@@ -60,7 +60,7 @@ curl --location 'http://localhost:8080/members'
     "birthday": "1990-01-01"
 }
 ```
-#### GET 로그인한 멤버 정보 조회
+> #### GET 로그인한 멤버 정보 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/members/member'
@@ -82,7 +82,7 @@ curl --location 'http://localhost:8080/members/member'
     "message": "로그인을 하지 않았습니다."
 }
 ```
-#### PUT 로그인 중인 회원정보 수정 요청
+> #### PUT 로그인 중인 회원정보 수정 요청
 ##### Request
 ```
 curl --location --request PUT 'http://localhost:8080/members/edit' \
@@ -94,13 +94,13 @@ curl --location --request PUT 'http://localhost:8080/members/edit' \
 }'
 ```
 ##### Response 200 ok
-#### DELETE 회원탈퇴
+> #### DELETE 회원탈퇴
 ##### Request
 ```
 curl --location --request DELETE 'http://15.165.26.32:8080/members/delete'
 ```
 ##### Response 200 ok
-#### GET 인가(로그인 상태인지 확인)
+> #### GET 인가(로그인 상태인지 확인)
 ##### Request
 ```
 curl --location 'http://localhost:8080/members/auth'
@@ -114,7 +114,7 @@ curl --location 'http://localhost:8080/members/auth'
     "message": "로그인을 하지 않았습니다."
 }
 ```
-#### GET 핸드폰 번호 중복 검사
+> #### GET 핸드폰 번호 중복 검사
 ##### Request
 ```
 curl --location 'http://15.165.26.32:8080/members/dupCheck/01056784567'
@@ -142,7 +142,7 @@ curl --location 'http://15.165.26.32:8080/members/dupCheck/01056784567'
 ```
 ### LoginController
 
-#### POST 회원가입
+> #### POST 회원가입
 ##### Request
 ```
 curl --location 'http://localhost:8080/join' \
@@ -163,7 +163,7 @@ curl --location 'http://localhost:8080/join' \
 }
 ```
 
-#### POST 로그인
+> #### POST 로그인
 ##### Request
 ```
 curl --location 'http://localhost:8080/login' \
@@ -187,7 +187,7 @@ curl --location 'http://localhost:8080/login' \
     "message": "존재하지 않는 핸드폰 번호"
 }
 ```
-#### POST 로그아웃
+> #### POST 로그아웃
 ##### Request
 ```
 curl --location 'http://localhost:8080/logout'
@@ -195,7 +195,7 @@ curl --location 'http://localhost:8080/logout'
 ##### Response 200 ok
 
 ### ReviewController
-#### POST 영수증 인식
+> #### POST 영수증 인식
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/receipt/' \
@@ -208,7 +208,7 @@ curl --location 'http://localhost:8080/reviews/receipt/' \
     "address": "경기도 수원시 영통구 아주로 46 (원천동) 아록빌딩 1층"
 }
 ```
-#### POST 리뷰 생성
+> #### POST 리뷰 생성
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/' \
@@ -217,7 +217,7 @@ curl --location 'http://localhost:8080/reviews/' \
 ```
 ##### Response 200 ok
 
-#### GET 전체 리뷰 조회
+> #### GET 전체 리뷰 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/'
@@ -243,7 +243,7 @@ curl --location 'http://localhost:8080/reviews/'
     }
 ]
 ```
-#### GET 특정 리뷰 조회
+> #### GET 특정 리뷰 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/1'
@@ -259,7 +259,7 @@ curl --location 'http://localhost:8080/reviews/1'
     "reviewId" : "1"
 }
 ```
-#### GET 특정 가게 리뷰 조회
+> #### GET 특정 가게 리뷰 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/store/229?season=2023-Winter&page=0&size=2'
@@ -285,7 +285,7 @@ curl --location 'http://localhost:8080/reviews/store/229?season=2023-Winter&page
     }
 ]
 ```
-#### GET 현재 로그인한 회원의 리뷰 조회
+> #### GET 현재 로그인한 회원의 리뷰 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reviews/member/'
@@ -312,7 +312,7 @@ curl --location 'http://localhost:8080/reviews/member/'
 ]
 ```
 
-#### DELETE 특정 리뷰 삭제
+> #### DELETE 특정 리뷰 삭제
 ##### Request
 ```
 curl --location --request DELETE 'http://localhost:8080/reviews/22'
@@ -321,7 +321,7 @@ curl --location --request DELETE 'http://localhost:8080/reviews/22'
 
 ### ReportController
 
-#### POST 신고 생성
+> #### POST 신고 생성
 ##### Request
 ```
 curl --location 'http://localhost:8080/reports/' \
@@ -334,7 +334,7 @@ curl --location 'http://localhost:8080/reports/' \
 ```
 ##### Response 200 ok
 
-#### PUT 신고 처리상태 변경
+> #### PUT 신고 처리상태 변경
 ##### Request(완료로 바꾸기)
 ```
 curl --location --request PUT 'http://localhost:8080/reports/23' \
@@ -351,7 +351,7 @@ curl --location --request PUT 'http://localhost:8080/reports/23' \
 ```
 ##### Response 200 ok
 
-#### GET 전체 신고 조회
+> #### GET 전체 신고 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reports/'
@@ -403,7 +403,7 @@ curl --location 'http://localhost:8080/reports/'
     }
 ]
 ```
-#### GET 특정 유저의 신고 조회
+> #### GET 특정 유저의 신고 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/reports/member/2'
@@ -419,7 +419,7 @@ curl --location 'http://localhost:8080/reports/member/2'
   }
 ]
 ```
-#### GET 처리 상태로 신고 조회
+> #### GET 처리 상태로 신고 조회
 ##### Requset (처리중인 신고목록 조회)
 ```
 curl --location 'http://localhost:8080/reports/status/PROCESSING'
@@ -480,7 +480,7 @@ curl --location 'http://localhost:8080/reports/status/COMPLETED'
 
 ### StoreController
 
-#### GET 특정 가게정보 조회
+> #### GET 특정 가게정보 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/store/171'
@@ -496,7 +496,7 @@ curl --location 'http://localhost:8080/store/171'
 }
 ```
 
-#### GET 조건으로 가게 조회
+> #### GET 조건으로 가게 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/stores/condition?address=서울특별시 종로구 종로 200-4&city=서울&name=육회자매집 본점'
@@ -512,7 +512,7 @@ curl --location 'http://localhost:8080/stores/condition?address=서울특별시 
 }
 ```
 
-#### GET 지역별 가게 리스트 조회(지도)
+> #### GET 지역별 가게 리스트 조회(지도)
 ##### Request
 ```
 curl --location 'http://localhost:8080/stores/map/수원'
@@ -543,7 +543,7 @@ curl --location 'http://localhost:8080/stores/map/수원'
     }
 ]
 ```
-#### GET 지역별 가게 랭킹 페이지 조회
+> #### GET 지역별 가게 랭킹 페이지 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/stores/rank/서울?page=0&size=5'
@@ -576,7 +576,7 @@ curl --location 'http://localhost:8080/stores/rank/서울?page=0&size=5'
 ```
 ### WishController
 
-#### PUT 특정 가게 찜하기 상태 변경
+> #### PUT 특정 가게 찜하기 상태 변경
 ##### Request
 ```
 curl --location 'http://localhost:8080/wish/change/:storeId'
@@ -584,7 +584,7 @@ curl --location 'http://localhost:8080/wish/change/:storeId'
 ##### Response 200 ok
 찜한 상태라면 db에서 제거, 찜이 되어 있지 않다면 db에 저장
 
-#### GET 현재 회원의 찜하기 목록 조회
+> #### GET 현재 회원의 찜하기 목록 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/wishes'
@@ -603,7 +603,7 @@ curl --location 'http://localhost:8080/wishes'
   }
 ]
 ```
-#### GET 현재 회원의 특정 가게 찜유무 조회
+> #### GET 현재 회원의 특정 가게 찜유무 조회
 ##### Requset
 ```
 curl --location 'http://localhost:8080/wish/state/171'
@@ -615,7 +615,7 @@ true
 
 ### SeasonRankController
 
-#### GET 특정 가게의 명예의 전당 랭킹 이력 조회
+> #### GET 특정 가게의 명예의 전당 랭킹 이력 조회
 ##### Requset
 ```
 curl --location 'http://localhost:8080/seasonRank/store/171'
@@ -634,7 +634,7 @@ curl --location 'http://localhost:8080/seasonRank/store/171'
 ]
 ```
 
-#### GET 지역별 특정 시즌 명예의 전당 리스트 조회
+> #### GET 지역별 특정 시즌 명예의 전당 리스트 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/seasonRank/2023-Fall/서울'
@@ -652,7 +652,7 @@ curl --location 'http://localhost:8080/seasonRank/2023-Fall/서울'
   }
 ]
 ```
-#### GET 명예의 전당에 있는 시즌 이름들 조회
+> #### GET 명예의 전당에 있는 시즌 이름들 조회
 ##### Requset
 ```
 curl --location 'http://localhost:8080/seasonRank/seasonName'
@@ -664,7 +664,7 @@ curl --location 'http://localhost:8080/seasonRank/seasonName'
   "2023-Summer"
 ]
 ```
-#### GET 현재 시즌 조회
+> #### GET 현재 시즌 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/seasonRank/now'
@@ -674,7 +674,7 @@ curl --location 'http://localhost:8080/seasonRank/now'
 "2023-Winter"
 ```
 
-#### GET 다음 시즌까지의 날짜, 시간 조회
+> #### GET 다음 시즌까지의 날짜, 시간 조회
 ##### Request
 ```
 curl --location 'http://localhost:8080/seasonRank/next'
