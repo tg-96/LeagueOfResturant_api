@@ -35,7 +35,7 @@
 
 ## 협업 방식
 - github, discord
-- branch 관리
+- branch 관리:
   main(배포) - dev(개발) - feat/{...}
 
 ## 배포 
@@ -44,165 +44,645 @@
 ## API
 
 ### MemberController
-> #### GET 모든멤버조회
-> http://localhost:8080/members
 
-> #### GET 로그인한 멤버 정보 조회
-> http://localhost:8080/members/member
-
-> #### GET 조건으로 멤버 검색
-> http://localhost:8080/members/condition?name=:name&phoneNumber=:phoneNumber
-
-> #### PUT 로그인 중인 회원정보 수정 요청
-> http://localhost:8080/members/edit
+#### GET 모든멤버조회
+##### Request
 ```
-Body
-  {
+curl --location 'http://localhost:8080/members'  
+```
+##### Request
+``` 
+{
+    "name": "John Doe",
+    "phoneNumber": "1234567890",
+    "password": "$2a$10$Z5Ii8JyEJXPVeqOHCX8xkuQrvI8GMNH2JEs0r79jlAoY/bBJTPl8m",
+    "gender": "MALE",
+    "birthday": "1990-01-01"
+}
+```
+#### GET 로그인한 멤버 정보 조회
+##### Request
+```
+curl --location 'http://localhost:8080/members/member'
+```
+##### Response (성공) 200 ok
+```
+{
+    "name": "John Doe",
+    "phoneNumber": "1234567890",
+    "password": "$2a$10$Z5Ii8JyEJXPVeqOHCX8xkuQrvI8GMNH2JEs0r79jlAoY/bBJTPl8m",
+    "gender": "MALE",
+    "birthday": "1990-01-01"
+}
+```
+##### Response (실패) 400 BAD REQUEST
+```
+{
+    "errorCode": "NO_SESSION",
+    "message": "로그인을 하지 않았습니다."
+}
+```
+#### PUT 로그인 중인 회원정보 수정 요청
+##### Request
+```
+curl --location --request PUT 'http://localhost:8080/members/edit' \
+--data '{
         "name" : "alli",
-        "password" : "software9,
+        "password" : "1234",
         "gender" : "FEMALE",
         "birthday" : "2000-12-30"
-  }
+}'
 ```
-> #### DELETE 회원탈퇴
-> http://localhost:8080/members/delete
-
-> #### GET 인가(로그인 상태인지 확인)
-> http://localhost:8080/members/auth
-
-> #### GET 핸드폰 번호 중복 검사
-> http://localhost:8080/members/dupCheck/
-
-> #### GET 비밀번호 일치 체크
-> http://localhost:8080/members/validate/:password
-
+##### Response 200 ok
+#### DELETE 회원탈퇴
+##### Request
+```
+curl --location --request DELETE 'http://15.165.26.32:8080/members/delete'
+```
+##### Response 200 ok
+#### GET 인가(로그인 상태인지 확인)
+##### Request
+```
+curl --location 'http://localhost:8080/members/auth'
+```
+##### Response(로그인 상태)
+200 ok
+##### Response(로그인 안한 상태) 400 BAD REQUEST
+```
+{
+    "errorCode": "NO_SESSION",
+    "message": "로그인을 하지 않았습니다."
+}
+```
+#### GET 핸드폰 번호 중복 검사
+##### Request
+```
+curl --location 'http://15.165.26.32:8080/members/dupCheck/01056784567'
+```
+##### Response(핸드폰 번호가 이미 존재) 400 BAD REQUEST
+```
+{
+    "errorCode": "PHONE_NUM_DUPLICATED",
+    "message": "핸드폰 번호가 이미 존재합니다."
+}
+```
+##### Response(핸드폰 번호 존재)
+200 ok
+##### Response(잘못된 형식으로 입력)
+```
+{
+    "timestamp": "2023-12-02T10:33:26.719+00:00",
+    "status": 500,
+    "error": "Internal Server Error",
+    ....
+    ....
+    "message": "PhoneNumberDupCheck.phoneNumber: 010으로 시작하고, '-' 없이 입력해주세요.",
+    "path": "/members/dupCheck/011124325757"
+}
+```
 ### LoginController
 
-> #### POST 회원가입
-> http://localhost:8080/join
+#### POST 회원가입
+##### Request
 ```
-body
+curl --location 'http://localhost:8080/join' \
+--data '{
+    "name": "John Doe",
+    "phoneNumber": "123-456-7890",
+    "password": "password123",
+    "gender": "MALE",
+    "birthday": "1990-01-01"
+  }'
+```
+##### Response(성공) 200 ok
+##### Response(실패) 400 BAD REQUEST
+```
 {
-    "name" : "한규정",
-    "phoneNumber" : "01030221161",
-    "password" : "msp214",
-    "gender" : "MALE",
-    "birthday" : "1999-06-30"
+    "errorCode": "ALREADY_EXISTS_USER",
+    "message": "이미 있는 계정"
 }
 ```
-> #### POST 로그인
-> http://localhost:8080/login
+
+#### POST 로그인
+##### Request
 ```
-body
+curl --location 'http://localhost:8080/login' \
+--data '{
+    "phoneNumber" : "1234567890",
+    "password": "password123"
+}'
+```
+##### Response(로그인 성공) 200 ok
+##### Response(패스워드 일치하지 않음) 400 BAD REQUEST
+```
 {
-    "phoneNumber": "01059135935",
-    "password": "123"
+    "errorCode": "PASSWORD_NOT_MATCHED",
+    "message": "일치하지 않는 비밀번호"
 }
 ```
-> #### POST 로그아웃
-> http://localhost:8080/logout
+##### Response(존재하지 않는 핸드폰 번호) 400 BAD REQUEST
+```
+{
+    "errorCode": "NOT_EXIST_PHONE_NUMBER",
+    "message": "존재하지 않는 핸드폰 번호"
+}
+```
+#### POST 로그아웃
+##### Request
+```
+curl --location 'http://localhost:8080/logout'
+```
+##### Response 200 ok
 
 ### ReviewController
-> #### POST 영수증 인식
-> http://localhost:8080/reviews/receipt
+#### POST 영수증 인식
+##### Request
 ```
-body form data 형식
-image 
+curl --location 'http://localhost:8080/reviews/receipt/' \
+--form 'image=@"영수증테스트/tom.png"'
 ```
-> #### POST 리뷰 생성
-> http://localhost:8080/reviews/
+##### Response 200 ok
 ```
-body form-data 형식
-content
-ratingPoint
-Image
-StoreName
-address
+{
+    "storeName": "탐앤탐스 아주대점",
+    "address": "경기도 수원시 영통구 아주로 46 (원천동) 아록빌딩 1층"
+}
+```
+#### POST 리뷰 생성
+##### Request
+```
+curl --location 'http://localhost:8080/reviews/' \
+--form 'reviewDto="{\"storeName \" : \"탐앤탐스 아주대점\", \"content\" : \"맛있어요!!\", \"ratingPoint\" : \"5\", \"address\" : \"경기도 수원시 영통구 아주로 46 (원천동) 아록빌딩 1층\"}";type=application/json' \
+--form 'image=@"ajouuniv/2023-2/소프트웨어공학/프로젝트/영수증테스트/tom.png"'
+```
+##### Response 200 ok
+
+#### GET 전체 리뷰 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reviews/'
+```
+##### Response
+```
+[
+    {
+        "storeName" : "가장 맛있는 족발",
+        "content": "굿굿굿",
+        "ratingPoint": 4,
+        "img": "src/main/resources/static/images/22532686-4243-460f-8b5c-410821020153.jpeg",
+        "season": "2023-Fall",
+        "reviewId" : "1"
+    },
+    {
+        "storeName" : "순대국밥",
+        "content": "맛있어요!",
+        "ratingPoint": 3,
+        "img": null,
+        "season": "2023-Fall",
+        "reviewId" : "2"
+    }
+]
+```
+#### GET 특정 리뷰 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reviews/1'
+```
+##### Response 200 ok
+```
+{
+    "storeName" : "가장 맛있는 족발",
+    "content": "굿굿굿",
+    "ratingPoint": 4,
+    "img": "src/main/resources/static/images/22532686-4243-460f-8b5c-410821020153.jpeg",
+    "season": "2023-Fall",
+    "reviewId" : "1"
+}
+```
+#### GET 특정 가게 리뷰 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reviews/store/229?season=2023-Winter&page=0&size=2'
+```
+##### Response
+```
+[
+    {
+        "storeName" : "가장 맛있는 족발",
+        "content": "굿굿굿",
+        "ratingPoint": 4,
+        "img": "src/main/resources/static/images/43332686-4243-460f-8b5c-410821020153.jpeg",
+        "season": "2023-Fall",
+        "reviewId" : "1"
+    },
+    {
+        "storeName" : "가장 맛있는 족발",
+        "content": "맛있어요!",
+        "ratingPoint": 5,
+        "img": "src/main/resources/static/images/96753213-4523-980c-8d7d-392809871837.jpeg",
+        "season": "2023-Fall",
+        "reviewId" : "11"
+    }
+]
+```
+#### GET 현재 로그인한 회원의 리뷰 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reviews/member/'
+```
+##### Response
+```
+[
+    {
+        "storeName" : "가장 맛있는 족발",
+        "content": "굿굿굿",
+        "ratingPoint": 4,
+        "img": "src/main/resources/static/images/43332686-4243-460f-8b5c-410821020153.jpeg",
+        "season": "2023-Fall",
+        "reviewId" : "1"
+    },
+    {
+        "storeName" : "수원 왕갈비 통닭",
+        "content": "와 진짜 맛있어요",
+        "ratingPoint": 5,
+        "img": "src/main/resources/static/images/39847643-2736-089c-7a8b-087384627364.jpeg",
+        "season": "2023-Fall",
+        "reviewId" : "1"
+    },
+]
 ```
 
-> #### GET 전체 리뷰 조회
-> http://localhost:8080/reviews/
-
-> #### GET 특정 리뷰 조회
-> http://localhost:8080/reviews/:reviewId
-
-> #### GET 특정 가게 리뷰 조회
-> http://localhost:8080/reviews/store/31?page=:page&size=:size&season=:season
-
-> #### GET 현재 로그인한 회원의 리뷰 조회
-> http://localhost:8080/reviews/member/
-
-> #### DELETE 특정 리뷰 삭제
-> http://localhost:8080/reviews/:reviewId
+#### DELETE 특정 리뷰 삭제
+##### Request
+```
+curl --location --request DELETE 'http://localhost:8080/reviews/22'
+```
+##### Response 200 ok
 
 ### ReportController
 
-> #### POST 신고 생성
-> http://localhost:8080/reports/
-body
+#### POST 신고 생성
+##### Request
+```
+curl --location 'http://localhost:8080/reports/' \
+--data '{
+    "reviewId": 5,
+    "memberId": 2,
+    "type": "UNRELATED_CONTENT",
+    "content": "이상한내용이있어여"
+}'
+```
+##### Response 200 ok
+
+#### PUT 신고 처리상태 변경
+##### Request(완료로 바꾸기)
+```
+curl --location --request PUT 'http://localhost:8080/reports/23' \
+--data '{
+    "status": "PROCESSING"
+}'
+```
+##### Request(처리중으로 바꾸기)
+```
+curl --location --request PUT 'http://localhost:8080/reports/23' \
+--data '{
+    "status": "PROCESSING"
+}'
+```
+##### Response 200 ok
+
+#### GET 전체 신고 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reports/'
+```
+##### Response
+```
+[
+    {
+        "type": UNRELATED_CONTENT,
+        "content": "내용이 상관없는것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OBSCENE_LANGUAGE",
+        "content": "비속어가 섞여 있어요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "PRIVACY_RISK",
+        "content": "개인정보가 유출될 것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "INAPPROPRIATE_AD",
+        "content": "광고목적인 것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OTHER",
+        "content": "말도 안되는 억지를 부려요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OTHER",
+        "content": "이상한것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "UNRELATED_CONTENT",
+        "content": "이상한내용이있어여",
+        "memberId": 2,
+        "reviewId": 5
+    }
+]
+```
+#### GET 특정 유저의 신고 조회
+##### Request
+```
+curl --location 'http://localhost:8080/reports/member/2'
+```
+##### Response
+```
+[
+  {
+    "type": "UNRELATED_CONTENT",
+    "content": "이상한내용이있어여",
+    "memberId": 2,
+    "reviewId": 5
+  }
+]
+```
+#### GET 처리 상태로 신고 조회
+##### Requset (처리중인 신고목록 조회)
+```
+curl --location 'http://localhost:8080/reports/status/PROCESSING'
+```
+##### Response
+```
+ {
+        "type": UNRELATED_CONTENT,
+        "content": "내용이 상관없는것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OBSCENE_LANGUAGE",
+        "content": "비속어가 섞여 있어요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "PRIVACY_RISK",
+        "content": "개인정보가 유출될 것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    }
+```
+ 
+##### Request(처리 완료된 신고 목록)
+```
+curl --location 'http://localhost:8080/reports/status/COMPLETED'
+```
+##### Response
 ```
 {
-    "reviewId": 5,
-    "memberId": 168,
-    "type": "OTHER",
-    "content": "이상한내용이있어여"
-}
+        "type": "INAPPROPRIATE_AD",
+        "content": "광고목적인 것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OTHER",
+        "content": "말도 안되는 억지를 부려요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "OTHER",
+        "content": "이상한것 같아요",
+        "memberId": 2,
+        "reviewId": 5
+    },
+    {
+        "type": "UNRELATED_CONTENT",
+        "content": "이상한내용이있어여",
+        "memberId": 2,
+        "reviewId": 5
+    }
 ```
-
-> #### POST 신고 처리상태 변경
-> http://localhost:8080/reports/:reportId
-
-> #### GET 전체 신고 조회
-> http://localhost:8080/reports/
-
-> #### GET 특정 신고 조회
-> http://localhost:8080/reports/:reportId
-
-> #### GET 특정 유저의 신고 조회
-> http://localhost:8080/reports/member/:memberId
-
-> #### GET 처리 상태로 신고 조회
-> http://localhost:8080/reports/status/COMPLETED
 
 ### StoreController
 
-> #### GET 특정 가게정보 조회
-> http://localhost:8080/store/:storeId
+#### GET 특정 가게정보 조회
+##### Request
+```
+curl --location 'http://localhost:8080/store/171'
+```
+##### Response
+```
+{
+    "id": 171,
+    "name": "육회자매집 본점",
+    "address": "서울특별시 종로구 종로 200-4",
+    "city": "서울",
+    "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF"
+}
+```
 
-> #### GET 조건으로 가게 조회
-> http://localhost:8080/stores/condition?address=:address&city=:city&name=:name
+#### GET 조건으로 가게 조회
+##### Request
+```
+curl --location 'http://localhost:8080/stores/condition?address=서울특별시 종로구 종로 200-4&city=서울&name=육회자매집 본점'
+```
+##### Response
+```
+{
+    "id": 171,
+    "name": "육회자매집 본점",
+    "address": "서울특별시 종로구 종로 200-4",
+    "city": "서울",
+    "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF"
+}
+```
 
-> #### GET 지역별 가게 리스트 조회(지도)
-> http://localhost:8080/stores/map/:city
-
-> #### GET 지역별 가게 랭킹 페이지 조회
-> http://localhost:8080/stores/rank/수?page=:page&size=:size
-
+#### GET 지역별 가게 리스트 조회(지도)
+##### Request
+```
+curl --location 'http://localhost:8080/stores/map/수원'
+```
+##### Response
+```
+[
+    {
+        "id": 6,
+        "name": "겐코 아주대점",
+        "address": "경기 수원시 팔달구 아주로47번길 12",
+        "city": "수원",
+        "img": "https://t1.daumcdn.net/localfiy/72EA67D991F147AF82546F92B53C697E"
+    },
+    {
+        "id": 8,
+        "name": "사랑집 아주대점",
+        "address": "경기도 수원시 팔달구 우만동 아주로39번길 18-7",
+        "city": "수원",
+        "img": "https://t1.kakaocdn.net/mystore/4E654F81E87A4258A1EBB96846B72C6F"
+    },
+    {
+        "id": 10,
+        "name": "김형건술집",
+        "address": "경기도 수원시 영통구 아주로 4번길 18",
+        "city": "수원",
+        "img": "https://t1.daumcdn.net/place/8E211424C2D14EF3A9DD8A529F5E73FA"
+    }
+]
+```
+#### GET 지역별 가게 랭킹 페이지 조회
+##### Request
+```
+curl --location 'http://localhost:8080/stores/rank/서울?page=0&size=5'
+```
+##### Response
+```
+[
+    {
+        "id": 171,
+        "name": "육회자매집 본점",
+        "address": "서울특별시 종로구 종로 200-4",
+        "city": "서울",
+        "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF"
+    },
+    {
+        "id": 223,
+        "name": "정식당",
+        "address": "서울 강남구 선릉로158길 11",
+        "city": "서울",
+        "img": "https://t1.daumcdn.net/place/B4BD18D8B9DA42B785422BCB69532AB7"
+    },
+    {
+        "id": 225,
+        "name": "신라호텔 라연",
+        "address": "서울 중구 동호로 249",
+        "city": "서울",
+        "img": "https://t1.daumcdn.net/cfile/1563013B4F547AAC0D"
+    }
+]
+```
 ### WishController
 
-> #### PUT 특정 가게 찜하기 상태 변경
-> http://localhost:8080/wish/change/:storeId
+#### PUT 특정 가게 찜하기 상태 변경
+##### Request
+```
+curl --location 'http://localhost:8080/wish/change/:storeId'
+```
+##### Response 200 ok
+찜한 상태라면 db에서 제거, 찜이 되어 있지 않다면 db에 저장
 
-> #### GET 현재 회원의 찜하기 목록 조회
-> http://localhost:8080/wishes
-    
-> #### GET 현재 회원의 특정 가게 찜유무 조회
-> http://localhost:8080/wish/state/:storeId
+#### GET 현재 회원의 찜하기 목록 조회
+##### Request
+```
+curl --location 'http://localhost:8080/wishes'
+```  
+##### Response
+```
+[
+  {
+      "storeId": 171,
+      "name": "육회자매집 본점",
+      "address": "서울특별시 종로구 종로 200-4",
+      "city": "서울",
+      "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF",
+      "rating" : "4",
+      "score"  : "720"
+  }
+]
+```
+#### GET 현재 회원의 특정 가게 찜유무 조회
+##### Requset
+```
+curl --location 'http://localhost:8080/wish/state/171'
+```
+##### Response 200 ok
+```
+true
+```
 
 ### SeasonRankController
 
-> #### GET 특정 가게의 명예의 전당 랭킹 이력 조회
-> http://localhost:8080/seasonRank/store/:storeId
+#### GET 특정 가게의 명예의 전당 랭킹 이력 조회
+##### Requset
+```
+curl --location 'http://localhost:8080/seasonRank/store/171'
+```
+##### Response
+```
+[
+  {
+      "storeName": "육회자매집 본점",  
+      "storeId": 171,
+      "city": "서울",
+      "season" : "2023-Fall",
+      "ranking" : "3",
+      "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF"
+  }
+]
+```
 
-> #### GET 지역별 특정 시즌 명예의 전당 리스트 조회
-> http://localhost:8080/seasonRank/:season/:city
+#### GET 지역별 특정 시즌 명예의 전당 리스트 조회
+##### Request
+```
+curl --location 'http://localhost:8080/seasonRank/2023-Fall/서울'
+```
+##### Response
+```
+[
+  {
+      "storeName": "육회자매집 본점",  
+      "storeId": 171,
+      "city": "서울",
+      "season" : "2023-Fall",
+      "ranking" : "3",
+      "img": "https://t1.daumcdn.net/place/059AA426385F4953B5AFBEF5F29494DF"
+  }
+]
+```
+#### GET 명예의 전당에 있는 시즌 이름들 조회
+##### Requset
+```
+curl --location 'http://localhost:8080/seasonRank/seasonName'
+```
+##### Response
+```
+[
+  "2023-Fall",
+  "2023-Summer"
+]
+```
+#### GET 현재 시즌 조회
+##### Request
+```
+curl --location 'http://localhost:8080/seasonRank/now'
+```
+##### Response
+```
+"2023-Winter"
+```
 
-> #### GET 명예의 전당에 있는 시즌 이름들 조회
-> http://localhost:8080/seasonRank/seasonName
-
-> #### GET 현재 시즌 조회
-> http://localhost:8080/seasonRank/now
-
-> #### GET 다음 시즌까지의 날짜, 시간 조회
-> http://localhost:8080/seasonRank/next
-
+#### GET 다음 시즌까지의 날짜, 시간 조회
+##### Request
+```
+curl --location 'http://localhost:8080/seasonRank/next'
+```
+##### Response
+```
+{
+    "days": 89,
+    "hours": 0
+}
+```
