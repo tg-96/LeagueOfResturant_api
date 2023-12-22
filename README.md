@@ -50,7 +50,7 @@
 ```
 curl --location 'http://localhost:8080/members'  
 ```
-##### Request
+##### Response
 ``` 
 {
     "name": "John Doe",
